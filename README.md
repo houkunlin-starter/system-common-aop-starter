@@ -1,3 +1,6 @@
+[![Maven Central](https://img.shields.io/maven-central/v/com.houkunlin/system-common-aop-starter.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.houkunlin%22%20AND%20a:%22system-common-aop-starter%22)
+[![Java CI with Gradle](https://github.com/houkunlin-starter/system-common-aop-starter/actions/workflows/gradle.yml/badge.svg)](https://github.com/houkunlin-starter/system-common-aop-starter/actions/workflows/gradle.yml)
+
 ## 常用的 AOP 注解功能
 
 ### 防止重复提交 `PreventRepeatSubmit`
