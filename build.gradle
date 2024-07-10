@@ -1,0 +1,184 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id "io.freefair.lombok" version "8.6"
+    id 'maven-publish'
+    id 'signing'
+    id 'java-library'
+    id 'application'
+    id 'idea'
+}
+
+group = 'com.houkunlin'
+version = '0.0.1-SNAPSHOT'
+description = """
+常用的 AOP 注解功能。
+Commonly used AOP annotation features.
+"""
+
+def gitRepo = "github.com/houkunlin-starter/system-common-aop-starter.git"
+def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
+
+if (isSnapshot && !version.endsWith('SNAPSHOT')) {
+    version += '-BUILD-SNAPSHOT'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    // Spring 里程碑仓库
+    maven { url 'https://repo.spring.io/artifactory/libs-milestone/' }
+}
+
+dependencies {
+    api('com.google.guava:guava:33.2.1-jre')
+//    implementation('com.houkunlin:system-common-starter:1.2.9')
+    compileOnly 'org.springframework.boot:spring-boot-starter-aop'
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+    testImplementation 'org.springframework.boot:spring-boot-starter-aop'
+    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    testImplementation('com.github.fppt:jedis-mock:1.1.2') {
+        exclude group: 'org.json', module: 'json'
+    }
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.testng:testng:7.10.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            pom {
+                name = project.name
+                packaging = 'jar'
+                description = project.description
+                url = "https://${gitRepo}"
+                // properties = []
+                licenses {
+                    license {
+                        name = 'Mulan Permissive Software License，Version 2'
+                        url = 'https://license.coscl.org.cn/MulanPSL2'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'houkunlin'
+                        name = 'HouKunLin'
+                        email = 'houkunlin@aliyun.com'
+                    }
+                }
+                scm {
+                    connection = "scm:git://${gitRepo}"
+                    developerConnection = "scm:git://${gitRepo}"
+                    url = "git://${gitRepo}"
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "sonatype"
+            credentials {
+                username = findProperty("ossrhUsername") ?: System.getenv("ossrhUsername")
+                password = findProperty("ossrhPassword") ?: System.getenv("ossrhPassword")
+            }
+            // 正式环境
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            // 非正式环境库
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+        }
+        maven {
+            name = "buildDir"
+            String releasesRepoUrl = "$buildDir/repos/releases"
+            String snapshotsRepoUrl = "$buildDir/repos/snapshots"
+            url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+signing {
+    // 使用 gradle.properties 设置参数，或者在命令行中增加 -Pgpg_private_key= -Pgpg_password= 设置参数
+    // 或者在环境变量中设置相应的环境变量
+    String signingKey = findProperty("gpg_private_key") ?: System.getenv("gpg_private_key")
+    if (signingKey != null) {
+        String signingPassword = findProperty("gpg_password") ?: System.getenv("gpg_password")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+    sign publishing.publications
+    // sign configurations.archives
+}
+
+bootJar {
+    enabled = false
+}
+bootStartScripts {
+    enabled = false
+}
+bootDistTar {
+    enabled = false
+}
+bootDistZip {
+    enabled = false
+}
+startScripts {
+    enabled = false
+}
+distTar {
+    enabled = false
+}
+distZip {
+    enabled = false
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+jar {
+    enabled = true
+    setArchiveClassifier("")
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+javadoc {
+    enabled = true
+    options.encoding = "UTF-8"
+    options.addStringOption('Xdoclint:none', '-quiet')
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+}
+
+test {
+    useJUnitPlatform()
+}
