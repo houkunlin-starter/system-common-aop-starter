@@ -1,6 +1,5 @@
 package com.houkunlin.system.common.aop;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -33,10 +32,5 @@ public class PreventRepeatSubmitAspect {
         if (b == null || !b) {
             throw new PreventRepeatSubmitException(annotation);
         }
-    }
-
-    @PostConstruct
-    public void post() {
-        log.info("{} 准备就绪", getClass());
     }
 }
