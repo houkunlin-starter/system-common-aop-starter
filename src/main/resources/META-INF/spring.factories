@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.houkunlin.system.common.aop.SystemCommonAopStarter
+  com.houkunlin.system.common.aop.SystemCommonAopStarter\
+  com.houkunlin.system.common.aop.SystemCommonAopExcelStarter
