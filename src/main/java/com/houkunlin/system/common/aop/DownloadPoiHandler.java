@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Excel 导出下载处理器
+ * Excel/Word 导出下载处理器
  *
  * @author HouKunLin
  */
