@@ -56,6 +56,11 @@
 | useDefaultStyle  | true                         | 详情请查阅 `EasyExcel` 文档                |
 | needHead         | true                         | 详情请查阅 `EasyExcel` 文档                |
 
+文件名参数支持 SpEL 表达式（模板）语法，参考如下：
+
+- `@DownloadExcel(filename = "Excel 导出 - #{result.size} 条数据")`
+- `@DownloadExcel(filename = "Excel 导出 - #{@dateBean.now()}")`
+
 #### `DownloadExcel#withTemplate` 参数说明
 
 需要自行实现 `DownloadPoiHandler` 接口对象并注入Bean，如果未找到则默认一个实现对象，该默认的对象只支持从 `classpath`
@@ -100,3 +105,17 @@ public DownloadPoiHandler downloadPoiHandler() {
 
 - `@DownloadExcel(filename = "Excel 导出", withTemplate = "file:./upload/template.xlsx")`
 - `@DownloadExcel(filename = "Excel 导出", withTemplate = "oss:/upload/template.xlsx")`
+
+### Word导出下载 `DownloadWord`
+
+| 参数           | 默认值                          | 说明                                          |
+|--------------|------------------------------|---------------------------------------------|
+| filename     |                              | 文件下载名称                                      |
+| contentType  | `"application/octet-stream"` | 文件下载头内容                                     |
+| withTemplate |                              | Word模板文档，参考 `DownloadExcel#withTemplate` 用法 |
+
+文件名参数支持 SpEL 表达式（模板）语法，参考如下：
+
+- `@DownloadWord(filename = "用户信息 - #{result.name}", withTemplate = "classpath:template.xlsx")`
+- `@DownloadWord(filename = "用户合同文档 - #{result.name}", withTemplate = "classpath:template.xlsx")`
+- `@DownloadWord(filename = "用户数据报告 - #{@dateBean.now()}", withTemplate = "classpath:template.xlsx")`
