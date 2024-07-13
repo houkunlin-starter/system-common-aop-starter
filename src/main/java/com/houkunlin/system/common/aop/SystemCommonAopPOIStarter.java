@@ -1,7 +1,7 @@
 package com.houkunlin.system.common.aop;
 
-import com.alibaba.excel.EasyExcel;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.POIDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -18,14 +18,14 @@ import java.io.InputStream;
  *
  * @author HouKunLin
  */
-@ConditionalOnClass(EasyExcel.class)
+@ConditionalOnClass(POIDocument.class)
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
-public class SystemCommonAopExcelStarter {
+public class SystemCommonAopPOIStarter {
 
     @Bean
     @ConditionalOnMissingBean
-    public DownloadPoiHandler downloadExcelHandler() {
+    public DownloadPoiHandler downloadPoiHandler() {
         return new DownloadPoiHandler() {
             private static final Logger logger = LoggerFactory.getLogger(DownloadPoiHandler.class);
 

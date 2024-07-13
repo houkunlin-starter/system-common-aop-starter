@@ -1,2 +1,2 @@
 com.houkunlin.system.common.aop.SystemCommonAopStarter
-com.houkunlin.system.common.aop.SystemCommonAopExcelStarter
+com.houkunlin.system.common.aop.SystemCommonAopPOIStarter
