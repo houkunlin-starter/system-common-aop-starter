@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.0.0'
+version = '1.0.1'
 description = """
 常用的 AOP 注解功能。
 Commonly used AOP annotation features.
@@ -61,6 +61,12 @@ dependencies {
     testImplementation 'org.testng:testng:7.10.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    generatedPomCustomization {
+        enabled = false
+    }
 }
 
 publishing {
