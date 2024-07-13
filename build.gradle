@@ -119,19 +119,6 @@ publishing {
             String snapshotsRepoUrl = "$buildDir/repos/snapshots"
             url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
         }
-        maven {
-            name = "reposilite"
-            credentials(PasswordCredentials) {
-                username = findProperty("reposilite.username") ?: System.getenv("reposilite.username")
-                password = findProperty("reposilite.password") ?: System.getenv("reposilite.password")
-            }
-            authentication {
-                basic(BasicAuthentication)
-            }
-            setAllowInsecureProtocol(true)
-            def repoBaseUrl = "http://maven.gooks.cn"
-            url isSnapshot ? "$repoBaseUrl/snapshots" : "$repoBaseUrl/releases"
-        }
     }
 }
 
