@@ -27,6 +27,7 @@ import java.io.InputStream;
 @ConditionalOnClass(XWPFTemplate.class)
 @RequiredArgsConstructor
 public class DownloadWordAspect {
+    private final TemplateParser templateParser;
     private final DownloadPoiHandler downloadPoiHandler;
     private final HttpServletResponse response;
 
@@ -35,7 +36,7 @@ public class DownloadWordAspect {
         try {
             Object object = pjp.proceed();
             try {
-                renderWord(annotation.filename(), annotation.contentType(), annotation.withTemplate(), object);
+                renderWord(pjp, annotation, object);
             } catch (IOException e) {
                 log.error("下载 Word 文件失败，写 Word 文件流失败", e);
                 return object;
@@ -47,7 +48,9 @@ public class DownloadWordAspect {
         return null;
     }
 
-    private void renderWord(String filename, String contentType, String withTemplate, Object data) throws IOException {
+    @SuppressWarnings({"unchecked"})
+    private void renderWord(ProceedingJoinPoint pjp, DownloadWord annotation, Object data) throws IOException {
+        String withTemplate = annotation.withTemplate();
         if (withTemplate.isBlank()) {
             throw new IOException("请正确配置模板文件");
         }
@@ -61,8 +64,14 @@ public class DownloadWordAspect {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         XWPFTemplate.compile(templateInputStream).render(data).writeAndClose(byteArrayOutputStream);
 
-        String outFilename = filename;
-        String extension = FilenameUtils.getExtension(outFilename);
+        String filename = annotation.filename();
+
+        if (templateParser.isTemplate(filename)) {
+            Object context = templateParser.createContext(pjp, data, null);
+            filename = templateParser.parseTemplate(filename, context);
+        }
+
+        String extension = FilenameUtils.getExtension(filename);
         if (extension.isEmpty()) {
             String extension1;
             int adsIndex = withTemplate.indexOf(':');
@@ -72,14 +81,14 @@ public class DownloadWordAspect {
                 extension1 = FilenameUtils.getExtension(withTemplate);
             }
             if (!extension1.isEmpty()) {
-                outFilename = outFilename + "." + extension1;
+                filename = filename + "." + extension1;
             } else {
-                outFilename = outFilename + ".doc";
+                filename = filename + ".docx";
             }
         }
 
         byte[] byteArray = byteArrayOutputStream.toByteArray();
 
-        ResponseUtil.writeDownloadBytes(response, outFilename, contentType, byteArray);
+        ResponseUtil.writeDownloadBytes(response, filename, annotation.contentType(), byteArray);
     }
 }

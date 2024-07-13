@@ -88,4 +88,16 @@ public class DownloadExcelController {
     public List<ExcelDownloadBean> m20() {
         return data;
     }
+
+    @DownloadExcel(filename = "用户信息 - #{@testBean.now()}", dataClass = ExcelDownloadBean.class)
+    @GetMapping("/m21")
+    public List<ExcelDownloadBean> m21() {
+        return data;
+    }
+
+    @DownloadExcel(filename = "用户信息 - #{result.size} 条数据", dataClass = ExcelDownloadBean.class)
+    @GetMapping("/m22")
+    public List<ExcelDownloadBean> m22() {
+        return data;
+    }
 }

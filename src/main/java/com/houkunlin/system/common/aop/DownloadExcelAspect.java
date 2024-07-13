@@ -29,6 +29,7 @@ import java.util.Collection;
 @ConditionalOnClass(EasyExcel.class)
 @RequiredArgsConstructor
 public class DownloadExcelAspect {
+    private final TemplateParser templateParser;
     private final DownloadPoiHandler downloadPoiHandler;
     private final HttpServletResponse response;
 
@@ -38,7 +39,7 @@ public class DownloadExcelAspect {
             Object object = pjp.proceed();
             if (object instanceof Collection<?> collection) {
                 try {
-                    renderExcel(annotation, collection);
+                    renderExcel(pjp, annotation, collection);
                 } catch (IOException e) {
                     log.error("下载 Excel 文件失败，写 Excel 文件流失败", e);
                     return object;
@@ -52,7 +53,8 @@ public class DownloadExcelAspect {
         }
     }
 
-    private void renderExcel(DownloadExcel annotation, Collection<?> data) throws IOException {
+    @SuppressWarnings({"unchecked"})
+    private void renderExcel(ProceedingJoinPoint pjp, DownloadExcel annotation, Collection<?> data) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         Class<?> dataClass = annotation.dataClass();
@@ -88,11 +90,16 @@ public class DownloadExcelAspect {
             writerBuilder.sheet("Sheet1").doWrite(data);
         }
 
-        final String filename = annotation.filename() + annotation.excelType().getValue();
+        String filename = annotation.filename();
 
         byte[] byteArray = byteArrayOutputStream.toByteArray();
 
-        ResponseUtil.writeDownloadBytes(response, filename, annotation.contentType(), byteArray);
+        if (templateParser.isTemplate(filename)) {
+            Object context = templateParser.createContext(pjp, data, null);
+            filename = templateParser.parseTemplate(filename, context);
+        }
+
+        ResponseUtil.writeDownloadBytes(response, filename + annotation.excelType().getValue(), annotation.contentType(), byteArray);
 
         // return ResponseEntity.ok()
         //         .headers(headers)

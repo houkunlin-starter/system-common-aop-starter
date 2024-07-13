@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 public @interface DownloadExcel {
     /**
      * 下载的文件名
+     * <p>可自行实现 {@link TemplateParser} 接口来解析字符串模板，默认提供 {@link TemplateParserDefaultImpl} 来支持 SpEL 模板表达式解析
      */
     String filename();
 

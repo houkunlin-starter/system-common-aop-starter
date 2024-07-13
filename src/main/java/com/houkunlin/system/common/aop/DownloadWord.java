@@ -16,8 +16,8 @@ import java.lang.annotation.*;
 public @interface DownloadWord {
     /**
      * 下载的文件名。
-     * <p>
-     * 文件名不包含后缀名时将使用 {@link #withTemplate()} 的后缀名，假如 {@link #filename()} 和 {@link #withTemplate()}都没有后缀名时则默认 .doc 后缀名
+     * <p>文件名不包含后缀名时将使用 {@link #withTemplate()} 的后缀名，假如 {@link #filename()} 和 {@link #withTemplate()}都没有后缀名时则默认 .doc 后缀名
+     * <p>可自行实现 {@link TemplateParser} 接口来解析字符串模板，默认提供 {@link TemplateParserDefaultImpl} 来支持 SpEL 模板表达式解析
      */
     String filename();
 

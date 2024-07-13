@@ -41,6 +41,8 @@ class DownloadExcelControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private DownloadExcelController downloadExcelController;
+    @Autowired
+    private TestBean testBean;
 
     @Test
     void m11() throws Exception {
@@ -384,6 +386,74 @@ class DownloadExcelControllerTest {
                 .use1904windowing(false)
                 .password("123456A")
                 .sheet()
+                .doRead();
+    }
+
+    @Test
+    void m21() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m21"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息 - " + testBean.now() + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
+                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+                    assertEquals(data.size(), objects.size());
+
+                    for (int i = 0; i < objects.size(); i++) {
+                        assertEquals(data.get(i).getName(), objects.get(i).getName());
+                        assertEquals(data.get(i).getAge(), objects.get(i).getAge());
+                        assertEquals(data.get(i).getAddress(), objects.get(i).getAddress());
+                        assertEquals(data.get(i).getTime(), objects.get(i).getTime());
+                    }
+                }))
+                .headRowNumber(1)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
+                .doRead();
+    }
+
+    @Test
+    void m22() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m22"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息 - " + downloadExcelController.getData().size() + " 条数据" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
+                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+                    assertEquals(data.size(), objects.size());
+
+                    for (int i = 0; i < objects.size(); i++) {
+                        assertEquals(data.get(i).getName(), objects.get(i).getName());
+                        assertEquals(data.get(i).getAge(), objects.get(i).getAge());
+                        assertEquals(data.get(i).getAddress(), objects.get(i).getAddress());
+                        assertEquals(data.get(i).getTime(), objects.get(i).getTime());
+                    }
+                }))
+                .headRowNumber(1)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
                 .doRead();
     }
 
