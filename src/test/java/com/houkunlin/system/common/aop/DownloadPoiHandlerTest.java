@@ -38,6 +38,11 @@ class DownloadPoiHandlerTest {
         fooLogger.addAppender(listAppender);
 
         inputStream = downloadPoiHandler.getTemplate("test-file.txt");
+        assertNotNull(inputStream);
+        byteArray = ByteStreams.toByteArray(inputStream);
+        assertTrue(new String(byteArray).startsWith(FILE_TEXT));
+
+        inputStream = downloadPoiHandler.getTemplate("test-file1.txt");
         assertNull(inputStream);
 
         // 从 ListAppender 提取捕获的日志事件
@@ -49,9 +54,14 @@ class DownloadPoiHandlerTest {
 
     @Test
     void getTemplateByClassPath() throws IOException {
-        InputStream inputStream = downloadPoiHandler.getTemplateByClassPath("classpath:test-file.txt");
+        InputStream inputStream = downloadPoiHandler.getTemplate("classpath:test-file.txt");
         assertNotNull(inputStream);
         byte[] byteArray = ByteStreams.toByteArray(inputStream);
+        assertTrue(new String(byteArray).startsWith(FILE_TEXT));
+
+        inputStream = downloadPoiHandler.getTemplate("test-file.txt");
+        assertNotNull(inputStream);
+        byteArray = ByteStreams.toByteArray(inputStream);
         assertTrue(new String(byteArray).startsWith(FILE_TEXT));
     }
 }
