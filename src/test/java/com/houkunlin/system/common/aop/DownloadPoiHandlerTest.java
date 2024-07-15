@@ -43,8 +43,8 @@ class DownloadPoiHandlerTest {
         // 从 ListAppender 提取捕获的日志事件
         List<ILoggingEvent> list = listAppender.list;
         assertEquals(1, list.size());
-        assertEquals("使用默认的 Excel 下载处理器，不支持读取 ClassPath 之外的文件模板，需要自行实现 DownloadPoiHandler 接口功能。当前读取模板：{}", list.get(list.size() - 1).getMessage());
-        assertEquals("使用默认的 Excel 下载处理器，不支持读取 ClassPath 之外的文件模板，需要自行实现 DownloadPoiHandler 接口功能。当前读取模板：test-file.txt", list.get(list.size() - 1).getFormattedMessage());
+        assertEquals("使用默认的 Excel/Word 模板处理器，不支持读取 ClassPath 之外的文件模板，需要自行实现 DownloadPoiHandler 接口功能。当前读取模板：{}", list.get(list.size() - 1).getMessage());
+        assertEquals("使用默认的 Excel/Word 模板处理器，不支持读取 ClassPath 之外的文件模板，需要自行实现 DownloadPoiHandler 接口功能。当前读取模板：test-file1.txt", list.get(list.size() - 1).getFormattedMessage());
     }
 
     @Test
