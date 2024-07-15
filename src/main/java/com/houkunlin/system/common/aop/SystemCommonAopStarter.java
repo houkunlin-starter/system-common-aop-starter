@@ -1,6 +1,8 @@
 package com.houkunlin.system.common.aop;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -10,6 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author HouKunLin
@@ -53,5 +59,25 @@ public class SystemCommonAopStarter {
     @ConditionalOnMissingBean
     public RequestRateLimiterHandler requestRateLimiterHandler() {
         return new RequestRateLimiterHandlerImpl(HttpHeaders.AUTHORIZATION);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DownloadFileHandler downloadFileHandler() {
+        return new DownloadFileHandler() {
+            private static final Logger logger = LoggerFactory.getLogger(DownloadFileHandler.class);
+
+            @Override
+            public InputStream getFileInputStream(@NonNull String filename) throws IOException {
+                if (filename.isBlank()) {
+                    return null;
+                }
+                InputStream inputStream = ClassPathUtil.getResourceAsStream(filename);
+                if (inputStream == null) {
+                    logger.warn("使用默认的文件下载处理器，不支持读取 ClassPath 之外的文件，需要自行实现 DownloadFileHandler 接口功能。当前读取文件：{}", filename);
+                }
+                return inputStream;
+            }
+        };
     }
 }

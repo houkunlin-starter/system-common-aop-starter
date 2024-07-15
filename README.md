@@ -81,21 +81,11 @@ public DownloadPoiHandler downloadPoiHandler() {
             if (templateName.isBlank()) {
                 return null;
             }
-            InputStream inputStream = getTemplateByClassPath(templateName);
+            InputStream inputStream = ClassPathUtil.getResourceAsStream(templateName);
             if (inputStream == null) {
-                logger.warn("使用默认的 Excel 下载处理器，不支持读取 ClassPath 之外的文件模板，需要自行实现 DownloadPoiHandler 接口功能。当前读取模板：{}", templateName);
+                logger.warn("使用默认的 Excel/Word 模板处理器，不支持读取 ClassPath 之外的文件模板，需要自行实现 DownloadPoiHandler 接口功能。当前读取模板：{}", templateName);
             }
             return inputStream;
-        }
-
-        @Override
-        public InputStream getTemplateByClassPath(@NonNull String templateName) throws IOException {
-            if (templateName.startsWith("classpath:")) {
-                return new ClassPathResource(templateName.substring(10)).getInputStream();
-            } else if (templateName.startsWith("classpath*:")) {
-                return new ClassPathResource(templateName.substring(11)).getInputStream();
-            }
-            return null;
         }
     };
 }
@@ -119,3 +109,55 @@ public DownloadPoiHandler downloadPoiHandler() {
 - `@DownloadWord(filename = "用户信息 - #{result.name}", withTemplate = "classpath:template.xlsx")`
 - `@DownloadWord(filename = "用户合同文档 - #{result.name}", withTemplate = "classpath:template.xlsx")`
 - `@DownloadWord(filename = "用户数据报告 - #{@dateBean.now()}", withTemplate = "classpath:template.xlsx")`
+
+### 文件下载 `DownloadFile`
+
+| 参数             | 默认值                          | 说明                                   |
+|----------------|------------------------------|--------------------------------------|
+| filename       | `""`                         | 单个文件名称，或者压缩包名称                       |
+| contentType    | `"application/octet-stream"` | 下载文件的文件内容类型                          |
+| source         | `""`                         | 下载资源来源，参考 `DownloadFile#source` 参数说明 |
+| forceCompress  | false                        | 强制打包压缩                               |
+| compressFormat | `"zip"`                      | 打包压缩类型                               |
+
+文件名参数支持 SpEL 表达式（模板）语法，参考如下：
+
+- `@DownloadFile(filename = "某某文件 - #{result.name}")`
+- `@DownloadFile(filename = "某某文件 - #{@dateBean.now()}")`
+
+#### `DownloadFile#source` 参数说明
+
+需要自行实现 `DownloadFileHandler` 接口对象并注入Bean，如果未找到则默认一个实现对象，该默认的对象只支持从 `classpath`
+中读取文件，默认用法参考如下：
+
+- `@DownloadFile(source = "classpath:template.xlsx")`
+
+```java
+
+@Bean
+@ConditionalOnMissingBean
+public DownloadFileHandler downloadFileHandler() {
+    return new DownloadFileHandler() {
+        private static final Logger logger = LoggerFactory.getLogger(DownloadFileHandler.class);
+
+        @Override
+        public InputStream getFileInputStream(@NonNull String filename) throws IOException {
+            if (filename.isBlank()) {
+                return null;
+            }
+            InputStream inputStream = ClassPathUtil.getResourceAsStream(filename);
+            if (inputStream == null) {
+                logger.warn("使用默认的文件下载处理器，不支持读取 ClassPath 之外的文件，需要自行实现 DownloadFileHandler 接口功能。当前读取文件：{}", filename);
+            }
+            return inputStream;
+        }
+    };
+}
+```
+
+可自行实现 `DownloadFileHandler` 接口来支持如下场景使用：
+
+- `@DownloadFile(source = "file:./upload/template.xlsx")`
+- `@DownloadFile(source = "oss:/upload/template.xlsx")`
+- `@DownloadFile(source = "http://127.0.0.1/template.xlsx")`
+- `@DownloadFile(source = "https://127.0.0.1/template.xlsx")`
