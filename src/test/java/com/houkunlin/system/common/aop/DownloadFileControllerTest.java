@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -40,6 +41,7 @@ class DownloadFileControllerTest {
         MvcResult mvcResult = mockMvc.perform(get("/DownloadFile/m11"))
                 .andDo(log())
                 .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.CACHE_CONTROL, "max-age=3600"))
                 .andExpect(header().string("pragma", "no-cache"))
                 .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
@@ -59,7 +61,7 @@ class DownloadFileControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("pragma", "no-cache"))
                 .andExpect(header().string("expires", expires))
-                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("inline")
                         .filename("测试文件.txt", StandardCharsets.UTF_8)
                         .build().toString()))
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
@@ -88,12 +90,12 @@ class DownloadFileControllerTest {
 
     @Test
     void m14() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadFile/m14"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadFile/m14").param("inline", "true"))
                 .andDo(log())
                 .andExpect(status().isOk())
                 .andExpect(header().string("pragma", "no-cache"))
                 .andExpect(header().string("expires", expires))
-                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("inline")
                         .filename("测试文件.txt", StandardCharsets.UTF_8)
                         .build().toString()))
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))

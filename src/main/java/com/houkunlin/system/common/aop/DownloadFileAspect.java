@@ -1,5 +1,7 @@
 package com.houkunlin.system.common.aop;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ import java.util.function.Supplier;
 public class DownloadFileAspect {
     private final TemplateParser templateParser;
     private final DownloadFileHandler downloadFileHandler;
+    private final HttpServletRequest request;
     private final HttpServletResponse response;
     public static final String unknownFilename = "未知文件.unknown";
     public static final String ERROR_TEXT = "文件下载失败，此文件可能从服务器丢失，请联系管理员核查。文件信息：";
@@ -84,7 +87,12 @@ public class DownloadFileAspect {
             Object context = templateParser.createContext(pjp, object, null);
             filename = templateParser.parseTemplate(filename, context);
         }
-        ResponseUtil.writeDownloadBytes(response, filename, annotation.contentType(), annotation.inline(), EMPTY_BYTE_ARRAY);
+        ResponseUtil.writeDownloadHeaders(response, filename, annotation.contentType(), isInline(annotation), annotation.headers());
+        response.setContentLengthLong(EMPTY_BYTE_ARRAY.length);
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(EMPTY_BYTE_ARRAY);
+        outputStream.flush();
+        response.flushBuffer();
     }
 
     /**
@@ -108,7 +116,7 @@ public class DownloadFileAspect {
             Object context = templateParser.createContext(pjp, object, null);
             filename = templateParser.parseTemplate(filename, context);
         }
-        ResponseUtil.writeDownloadHeaders(response, filename, annotation.contentType(), annotation.inline());
+        ResponseUtil.writeDownloadHeaders(response, filename, annotation.contentType(), isInline(annotation), annotation.headers());
         fileOutput.write(response.getOutputStream());
     }
 
@@ -161,7 +169,9 @@ public class DownloadFileAspect {
             return getFileOutputs(defaultIfBlank(fileModelMetadata.getFilename(), filename), fileModelMetadata.getSource(), true);
         }
         DownloadFileOutput fileOutput = null;
-        if (object instanceof String string) {
+        if (object instanceof DownloadFileOutput fileOutput1) {
+            fileOutput = fileOutput1;
+        } else if (object instanceof String string) {
             String zipEntryName = defaultIfBlank(filename, () -> downloadFileHandler.getFilename(string));
             InputStream inputStream = downloadFileHandler.getFileInputStream(string);
             if (inputStream != null) {
@@ -198,8 +208,6 @@ public class DownloadFileAspect {
                 fileOutputs.addAll(getFileOutputs(filename, o, false));
             }
             return fileOutputs;
-        } else if (object instanceof DownloadFileOutput fileOutput1) {
-            fileOutput = fileOutput1;
         }
         return fileOutput == null ? Collections.emptyList() : Collections.singletonList(fileOutput);
     }
@@ -302,6 +310,19 @@ public class DownloadFileAspect {
             }
         }
         return new DownloadFileModelMetadata(filename, o);
+    }
+
+    private boolean isInline(DownloadFile downloadFile) {
+        if (downloadFile.inlineParam().isBlank()) {
+            return downloadFile.inline();
+        }
+        String inlineParam = downloadFile.inlineParam();
+        if (request.getParameterMap().containsKey(inlineParam)) {
+            String parameter = request.getParameter(inlineParam);
+            return parameter == null || "true".equals(parameter) || parameter.isBlank();
+        } else {
+            return downloadFile.inline();
+        }
     }
 
 }

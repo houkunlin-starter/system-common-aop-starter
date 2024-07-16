@@ -5,11 +5,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * 请求响应工具
@@ -17,6 +21,11 @@ import java.nio.charset.StandardCharsets;
  * @author HouKunLin
  */
 class ResponseUtil {
+    public static final ZoneId GMT = ZoneId.of("GMT");
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
+    public static final String EXPIRES = DATE_FORMATTER.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), GMT));
+    public static final String NO_CACHE = CacheControl.noCache().mustRevalidate().getHeaderValue();
+
     private ResponseUtil() {
     }
 
@@ -94,20 +103,29 @@ class ResponseUtil {
      * @param contentType 文件类型
      */
     public static void writeDownloadHeaders(HttpServletResponse response, String filename, String contentType, boolean inline) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(CacheControl.noCache().mustRevalidate());
-        headers.setPragma("no-cache");
-        headers.setExpires(0);
-        headers.setContentDisposition(ContentDisposition.builder(inline ? "inline" : "attachment")
-                .filename(filename, StandardCharsets.UTF_8)
-                .build());
+        writeDownloadHeaders(response, filename, contentType, inline, new String[0]);
+    }
 
+    /**
+     * 写入下载文件响应头
+     *
+     * @param response    请求响应对象
+     * @param filename    文件名
+     * @param contentType 文件类型
+     * @param headers     自定义请求头参数列表
+     */
+    public static void writeDownloadHeaders(HttpServletResponse response, String filename, String contentType, boolean inline, String... headers) {
+        ContentDisposition contentDisposition = ContentDisposition.builder(inline ? "inline" : "attachment")
+                .filename(filename, StandardCharsets.UTF_8)
+                .build();
         response.setStatus(200);
         response.setContentType(contentType);
-        headers.forEach((key, values) -> {
-            for (String value : values) {
-                response.addHeader(key, value);
-            }
-        });
+        response.setHeader("Cache-Control", NO_CACHE);
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", EXPIRES);
+        response.setHeader("Content-Disposition", contentDisposition.toString());
+        for (int i = 1; i < headers.length; i += 2) {
+            response.setHeader(headers[i - 1], headers[i]);
+        }
     }
 }

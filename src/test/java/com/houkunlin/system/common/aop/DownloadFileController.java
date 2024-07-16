@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,13 +21,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DownloadFileController {
 
-    @DownloadFile
+    @DownloadFile(headers = {HttpHeaders.CACHE_CONTROL, "max-age=3600"})
     @GetMapping("/m11")
     public Object m11() {
         return "classpath:test-file.txt";
     }
 
-    @DownloadFile(filename = "测试文件.txt")
+    @DownloadFile(filename = "测试文件.txt", inline = true)
     @GetMapping("/m12")
     public Object m12() {
         return "classpath:test-file.txt";
@@ -38,7 +39,7 @@ public class DownloadFileController {
         return "test-file.txt";
     }
 
-    @DownloadFile(filename = "测试文件.txt")
+    @DownloadFile(filename = "测试文件.txt", inlineParam = "inline")
     @GetMapping("/m14")
     public Object m14() {
         return "test-file.txt";

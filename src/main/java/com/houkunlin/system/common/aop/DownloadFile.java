@@ -33,6 +33,16 @@ public @interface DownloadFile {
     String source() default "";
 
     /**
+     * 强制打包压缩
+     */
+    boolean forceCompress() default false;
+
+    /**
+     * 打包压缩类型
+     */
+    String compressFormat() default "zip";
+
+    /**
      * 下载文件的文件内容类型
      */
     String contentType() default MediaType.APPLICATION_OCTET_STREAM_VALUE;
@@ -43,12 +53,23 @@ public @interface DownloadFile {
     boolean inline() default false;
 
     /**
-     * 强制打包压缩
+     * 浏览器预览，需要与 {@link #contentType()} 配合使用。
+     * <p>自动识别请求参数 {@link #inlineParam()} 的值来设置 {@link #inline()} 参数。
+     * <p>设置了该参数时，该参数的效果将比 {@link #inline()} 参数设置优先级高，如果请求中不存在该参数，则使用 {@link #inline()} 值。
+     * <p><code>@DownloadFile(inlineParam = "inline")</code> 效果如下：
+     * <p>请求 <code>/api/?inline</code> 时 inline 值为 true<br/>
+     * 请求 <code>/api/?inline=true</code> 时 inline 值为 true<br/>
+     * 请求 <code>/api/?inline=</code> 时 inline 值为 true<br/>
+     * 请求 <code>/api/?inline=false</code> 时 inline 值为 false<br/>
+     * 请求 <code>/api/?inline=1</code> 时 inline 值为 false<br/>
+     * 请求 <code>/api/?inline=0</code> 时 inline 值为 false
+     * </p>
      */
-    boolean forceCompress() default false;
+    String inlineParam() default "";
 
     /**
-     * 打包压缩类型
+     * 响应头信息，
+     * headers[0] 为请求头KEY， headers[1] 为请求头VALUE，两个为一组，以此类推
      */
-    String compressFormat() default "zip";
+    String[] headers() default {};
 }

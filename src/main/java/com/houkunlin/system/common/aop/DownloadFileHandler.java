@@ -60,7 +60,7 @@ public interface DownloadFileHandler {
      * @throws IOException 异常
      */
     default void compressFiles(HttpServletResponse response, DownloadFile annotation, String filename, List<DownloadFileOutput> fileOutputs) throws IOException {
-        ResponseUtil.writeDownloadHeaders(response, filename, annotation.contentType(), annotation.inline());
+        ResponseUtil.writeDownloadHeaders(response, filename, annotation.contentType(), annotation.inline(), annotation.headers());
 
         final OutputStream cos = new CheckedOutputStream(response.getOutputStream(), new CRC32());
         final ZipOutputStream zos = new ZipOutputStream(cos);
