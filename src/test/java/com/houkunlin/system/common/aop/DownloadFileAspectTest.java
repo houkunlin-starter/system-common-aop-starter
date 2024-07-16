@@ -24,14 +24,14 @@ class DownloadFileAspectTest {
 
     @Test
     void defaultIfBlank() {
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank(null, () -> "文件名.txt"));
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank("", () -> "文件名.txt"));
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank("  ", () -> "文件名.txt"));
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank("文件名.txt", () -> "文件名1.txt"));
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank(null, "文件名.txt"));
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank("", "文件名.txt"));
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank("  ", "文件名.txt"));
-        assertEquals("文件名.txt", downloadFileAspect.defaultIfBlank("文件名.txt", "文件名1.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank(null, () -> "文件名.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank("", () -> "文件名.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank("  ", () -> "文件名.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank("文件名.txt", () -> "文件名1.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank(null, "文件名.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank("", "文件名.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank("  ", "文件名.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.defaultIfBlank("文件名.txt", "文件名1.txt"));
     }
 
     @Test
@@ -42,15 +42,15 @@ class DownloadFileAspectTest {
         // assertEquals("文件名.txt.duplicate-2", downloadFileAspect.getFilename(filenameSets, "文件名.txt"));
         // assertEquals("文件名.txt.duplicate-3", downloadFileAspect.getFilename(filenameSets, "文件名.txt"));
 
-        assertEquals("文件名.txt", downloadFileAspect.getFilename(filenameSets, "文件名.txt"));
-        assertEquals("文件名.duplicate-1.txt", downloadFileAspect.getFilename(filenameSets, "文件名.txt"));
-        assertEquals("文件名.duplicate-2.txt", downloadFileAspect.getFilename(filenameSets, "文件名.txt"));
-        assertEquals("文件名.duplicate-3.txt", downloadFileAspect.getFilename(filenameSets, "文件名.txt"));
+        assertEquals("文件名.txt", DownloadFileAspect.getFilename(filenameSets, "文件名.txt"));
+        assertEquals("文件名.duplicate-1.txt", DownloadFileAspect.getFilename(filenameSets, "文件名.txt"));
+        assertEquals("文件名.duplicate-2.txt", DownloadFileAspect.getFilename(filenameSets, "文件名.txt"));
+        assertEquals("文件名.duplicate-3.txt", DownloadFileAspect.getFilename(filenameSets, "文件名.txt"));
 
-        assertEquals("path/文件名.txt", downloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
-        assertEquals("path/文件名.duplicate-1.txt", downloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
-        assertEquals("path/文件名.duplicate-2.txt", downloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
-        assertEquals("path/文件名.duplicate-3.txt", downloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
+        assertEquals("path/文件名.txt", DownloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
+        assertEquals("path/文件名.duplicate-1.txt", DownloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
+        assertEquals("path/文件名.duplicate-2.txt", DownloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
+        assertEquals("path/文件名.duplicate-3.txt", DownloadFileAspect.getFilename(filenameSets, "path/文件名.txt"));
     }
 
     @Test
