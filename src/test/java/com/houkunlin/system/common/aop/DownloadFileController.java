@@ -173,7 +173,7 @@ public class DownloadFileController {
                 new FileInputStream("./src/test/resources/test-file.txt"),
                 IOUtils.toByteArray(new ClassPathResource("test-file.txt").getInputStream()),
                 new ClassPathResource("test-file.txt"),
-                new DownloadFileMeta("测试文件1.txt", "test-file.txt"),
+                new DownloadFileModelMetadata("测试文件1.txt", "test-file.txt"),
                 new DownloadFileBean("测试文件2.txt", "test-file.txt")
         );
     }
@@ -233,5 +233,27 @@ public class DownloadFileController {
                 new DownloadFileBean(null, new ClassPathResource("test-file.txt")),
                 new DownloadFileBean(null, new ClassPathResource("test-file.txt"))
         );
+    }
+
+    @DownloadFile
+    @GetMapping("/m37")
+    public Object m37() {
+        return null;
+    }
+
+    @DownloadFile
+    @GetMapping("/m38")
+    public void m38() {
+    }
+
+    @DownloadFile(filename = "test.txt")
+    @GetMapping("/m39")
+    public Object m39() {
+        return null;
+    }
+
+    @DownloadFile(filename = "test.txt")
+    @GetMapping("/m40")
+    public void m40() {
     }
 }

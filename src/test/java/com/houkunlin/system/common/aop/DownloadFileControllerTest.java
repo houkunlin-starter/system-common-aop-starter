@@ -649,4 +649,72 @@ class DownloadFileControllerTest {
         assertNotNull(zipEntry);
         assertEquals("test-file.duplicate-5.txt", zipEntry.getName());
     }
+
+    @Test
+    void m37() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadFile/m37"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("未知文件.unknown", StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        assertEquals(0, contentAsByteArray.length);
+    }
+
+    @Test
+    void m38() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadFile/m38"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("未知文件.unknown", StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        assertEquals(0, contentAsByteArray.length);
+    }
+
+    @Test
+    void m39() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadFile/m39"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("test.txt", StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        assertEquals(0, contentAsByteArray.length);
+    }
+
+    @Test
+    void m40() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadFile/m40"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("test.txt", StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        assertEquals(0, contentAsByteArray.length);
+    }
 }

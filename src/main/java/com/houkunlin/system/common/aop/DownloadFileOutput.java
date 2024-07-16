@@ -48,7 +48,11 @@ public class DownloadFileOutput implements Serializable {
     public DownloadFileOutput(String filename, String text) {
         this.filename = filename;
         this.inputStream = null;
-        this.bytes = text.getBytes(StandardCharsets.UTF_8);
+        if (text != null) {
+            this.bytes = text.getBytes(StandardCharsets.UTF_8);
+        } else {
+            this.bytes = DownloadFileAspect.EMPTY_BYTE_ARRAY;
+        }
     }
 
     public void write(OutputStream outputStream) throws IOException {

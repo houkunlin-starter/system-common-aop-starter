@@ -54,9 +54,9 @@ class DownloadFileAspectTest {
     }
 
     @Test
-    void getFileModel() throws InvocationTargetException, IllegalAccessException {
+    void getFileModelMetadata() throws InvocationTargetException, IllegalAccessException {
         DownloadFileBean testFileModel = new DownloadFileBean("文件名.txt", "http://127.0.0.1/a.txt");
-        DownloadFileMeta fileModel = downloadFileAspect.getFileModel(testFileModel);
+        DownloadFileModelMetadata fileModel = downloadFileAspect.getFileModelMetadata(testFileModel);
         assertEquals("文件名.txt", fileModel.getFilename());
         assertEquals("http://127.0.0.1/a.txt", fileModel.getSource());
     }

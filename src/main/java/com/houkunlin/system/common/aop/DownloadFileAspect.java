@@ -11,7 +11,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,9 +43,15 @@ public class DownloadFileAspect {
     public Object doBefore(ProceedingJoinPoint pjp, DownloadFile annotation) throws Throwable {
         try {
             Object object = pjp.proceed();
-            List<DownloadFileOutput> list = getFileOutputs(null, object, false);
-            if (list.isEmpty() && !annotation.source().isBlank()) {
-                list = new ArrayList<>(getFileOutputs(null, annotation.source(), false));
+            List<DownloadFileOutput> list;
+            if (object == null) {
+                if (annotation.source().isBlank()) {
+                    list = Collections.emptyList();
+                } else {
+                    list = getFileOutputs(null, annotation.source(), false);
+                }
+            } else {
+                list = getFileOutputs(null, object, false);
             }
             if (list.isEmpty()) {
                 writeEmpty(pjp, annotation, object);
@@ -143,13 +152,13 @@ public class DownloadFileAspect {
         }
         if (object.getClass().isAnnotationPresent(DownloadFileModel.class)) {
             try {
-                DownloadFileMeta fileModel = getFileModel(object);
-                return getFileOutputs(defaultIfBlank(fileModel.getFilename(), filename), fileModel.getSource(), true);
+                DownloadFileModelMetadata fileModelMetadata = getFileModelMetadata(object);
+                return getFileOutputs(defaultIfBlank(fileModelMetadata.getFilename(), filename), fileModelMetadata.getSource(), true);
             } catch (Exception e) {
                 return Collections.singletonList(new DownloadFileOutput(filename + ".error.txt", ERROR_TEXT + object));
             }
-        } else if (object instanceof DownloadFileMeta fileModel) {
-            return getFileOutputs(defaultIfBlank(fileModel.getFilename(), filename), fileModel.getSource(), true);
+        } else if (object instanceof DownloadFileModelMetadata fileModelMetadata) {
+            return getFileOutputs(defaultIfBlank(fileModelMetadata.getFilename(), filename), fileModelMetadata.getSource(), true);
         }
         DownloadFileOutput fileOutput = null;
         if (object instanceof String string) {
@@ -244,14 +253,14 @@ public class DownloadFileAspect {
     }
 
     /**
-     * 获取文件模型信息
+     * 获取文件模型信息数据
      *
      * @param object 文件对象
      * @return 文件模型
      * @throws IllegalAccessException    异常
      * @throws InvocationTargetException 异常
      */
-    public DownloadFileMeta getFileModel(Object object) throws IllegalAccessException, InvocationTargetException {
+    public DownloadFileModelMetadata getFileModelMetadata(Object object) throws IllegalAccessException, InvocationTargetException {
         String filename = null;
         Object o = null;
         Field[] declaredFields = object.getClass().getDeclaredFields();
@@ -292,7 +301,7 @@ public class DownloadFileAspect {
                 }
             }
         }
-        return new DownloadFileMeta(filename, o == null ? new byte[0] : o);
+        return new DownloadFileModelMetadata(filename, o);
     }
 
 }
