@@ -37,6 +37,7 @@ class DownloadExcelControllerTest {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
     private static final String expires = DATE_FORMATTER.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), GMT));
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -55,7 +56,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -89,7 +90,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -123,7 +124,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -157,7 +158,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -191,7 +192,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -225,7 +226,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -259,7 +260,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -293,7 +294,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -331,7 +332,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -365,7 +366,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -400,7 +401,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息 - " + testBean.now() + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -434,7 +435,7 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息 - " + downloadExcelController.getData().size() + " 条数据" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 

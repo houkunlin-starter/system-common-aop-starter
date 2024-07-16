@@ -24,7 +24,7 @@ public @interface DownloadWord {
     /**
      * 下载文件的文件内容类型
      */
-    String contentType() default MediaType.APPLICATION_OCTET_STREAM_VALUE;
+    String contentType() default "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
     /**
      * 模板文件。

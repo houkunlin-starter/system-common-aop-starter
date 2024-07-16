@@ -30,7 +30,7 @@ public @interface DownloadExcel {
     /**
      * 下载文件的文件内容类型
      */
-    String contentType() default MediaType.APPLICATION_OCTET_STREAM_VALUE;
+    String contentType() default "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     /**
      * 下载的 Excel 类型

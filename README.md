@@ -41,20 +41,20 @@
 
 ### Excel导出下载 `DownloadExcel`
 
-| 参数               | 默认值                          | 说明                                  |
-|------------------|------------------------------|-------------------------------------|
-| filename         |                              | 文件下载名称                              |
-| contentType      | `"application/octet-stream"` | 文件下载头内容                             |
-| excelType        | `ExcelTypeEnum.XLSX`         | 详情请查阅 `EasyExcel` 文档                |
-| sheetName        | `Sheet1`                     | Excel 表格的工作簿名称。详情请查阅 `EasyExcel` 文档 |
-| inMemory         | false                        | 详情请查阅 `EasyExcel` 文档                |
-| dataClass        | `Object.class`               | 数据的类型对象。详情请查阅 `EasyExcel` 文档        |
-| charset          | `"UTF-8"`                    | 详情请查阅 `EasyExcel` 文档                |
-| password         | `""`                         | 详情请查阅 `EasyExcel` 文档                |
-| withTemplate     | `""`                         | 详情请查阅 `EasyExcel` 文档                |
-| use1904windowing | false                        | 详情请查阅 `EasyExcel` 文档                |
-| useDefaultStyle  | true                         | 详情请查阅 `EasyExcel` 文档                |
-| needHead         | true                         | 详情请查阅 `EasyExcel` 文档                |
+| 参数               | 默认值                                                                   | 说明                                  |
+|------------------|-----------------------------------------------------------------------|-------------------------------------|
+| filename         |                                                                       | 文件下载名称                              |
+| contentType      | `"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"` | 文件下载头内容                             |
+| excelType        | `ExcelTypeEnum.XLSX`                                                  | 详情请查阅 `EasyExcel` 文档                |
+| sheetName        | `Sheet1`                                                              | Excel 表格的工作簿名称。详情请查阅 `EasyExcel` 文档 |
+| inMemory         | false                                                                 | 详情请查阅 `EasyExcel` 文档                |
+| dataClass        | `Object.class`                                                        | 数据的类型对象。详情请查阅 `EasyExcel` 文档        |
+| charset          | `"UTF-8"`                                                             | 详情请查阅 `EasyExcel` 文档                |
+| password         | `""`                                                                  | 详情请查阅 `EasyExcel` 文档                |
+| withTemplate     | `""`                                                                  | 详情请查阅 `EasyExcel` 文档                |
+| use1904windowing | false                                                                 | 详情请查阅 `EasyExcel` 文档                |
+| useDefaultStyle  | true                                                                  | 详情请查阅 `EasyExcel` 文档                |
+| needHead         | true                                                                  | 详情请查阅 `EasyExcel` 文档                |
 
 文件名参数支持 SpEL 表达式（模板）语法，参考如下：
 
@@ -98,11 +98,11 @@ public DownloadPoiHandler downloadPoiHandler() {
 
 ### Word导出下载 `DownloadWord`
 
-| 参数           | 默认值                          | 说明                                          |
-|--------------|------------------------------|---------------------------------------------|
-| filename     |                              | 文件下载名称                                      |
-| contentType  | `"application/octet-stream"` | 文件下载头内容                                     |
-| withTemplate |                              | Word模板文档，参考 `DownloadExcel#withTemplate` 用法 |
+| 参数           | 默认值                                                                         | 说明                                          |
+|--------------|-----------------------------------------------------------------------------|---------------------------------------------|
+| filename     |                                                                             | 文件下载名称                                      |
+| contentType  | `"application/vnd.openxmlformats-officedocument.wordprocessingml.document"` | 文件下载头内容                                     |
+| withTemplate |                                                                             | Word模板文档，参考 `DownloadExcel#withTemplate` 用法 |
 
 文件名参数支持 SpEL 表达式（模板）语法，参考如下：
 

@@ -33,6 +33,7 @@ class DownloadWordControllerTest {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
     private static final String expires = DATE_FORMATTER.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), GMT));
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     @Autowired
     private MockMvc mockMvc;
 
@@ -46,7 +47,7 @@ class DownloadWordControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息.docx", StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
@@ -67,7 +68,7 @@ class DownloadWordControllerTest {
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息 - 张三 18 岁.docx", StandardCharsets.UTF_8)
                         .build().toString()))
-                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
