@@ -84,7 +84,7 @@ public class DownloadFileAspect {
             Object context = templateParser.createContext(pjp, object, null);
             filename = templateParser.parseTemplate(filename, context);
         }
-        ResponseUtil.writeDownloadBytes(response, filename, annotation.contentType(), EMPTY_BYTE_ARRAY);
+        ResponseUtil.writeDownloadBytes(response, filename, annotation.contentType(), annotation.inline(), EMPTY_BYTE_ARRAY);
     }
 
     /**
@@ -108,7 +108,7 @@ public class DownloadFileAspect {
             Object context = templateParser.createContext(pjp, object, null);
             filename = templateParser.parseTemplate(filename, context);
         }
-        ResponseUtil.writeDownloadHeaders(response, filename, annotation.contentType());
+        ResponseUtil.writeDownloadHeaders(response, filename, annotation.contentType(), annotation.inline());
         fileOutput.write(response.getOutputStream());
     }
 

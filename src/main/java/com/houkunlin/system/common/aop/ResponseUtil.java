@@ -30,7 +30,21 @@ class ResponseUtil {
      * @throws IOException IO异常
      */
     public static void writeDownloadBytes(HttpServletResponse response, String filename, String contentType, byte[] bytes) throws IOException {
-        writeDownloadHeaders(response, filename, contentType);
+        writeDownloadBytes(response, filename, contentType, false, bytes);
+    }
+
+    /**
+     * 写入下载文件数据到请求响应对象中
+     *
+     * @param response    请求响应对象
+     * @param filename    文件名
+     * @param contentType 文件类型
+     * @param inline      是否浏览器预览
+     * @param bytes       文件字节
+     * @throws IOException IO异常
+     */
+    public static void writeDownloadBytes(HttpServletResponse response, String filename, String contentType, boolean inline, byte[] bytes) throws IOException {
+        writeDownloadHeaders(response, filename, contentType, inline);
 
         response.setContentLengthLong(bytes.length);
 
@@ -50,7 +64,21 @@ class ResponseUtil {
      * @throws IOException IO异常
      */
     public static void writeDownloadBytes(HttpServletResponse response, String filename, String contentType, InputStream inputStream) throws IOException {
-        writeDownloadHeaders(response, filename, contentType);
+        writeDownloadBytes(response, filename, contentType, false, inputStream);
+    }
+
+    /**
+     * 写入下载文件数据到请求响应对象中
+     *
+     * @param response    请求响应对象
+     * @param filename    文件名
+     * @param contentType 文件类型
+     * @param inline      是否浏览器预览
+     * @param inputStream 文件输入流
+     * @throws IOException IO异常
+     */
+    public static void writeDownloadBytes(HttpServletResponse response, String filename, String contentType, boolean inline, InputStream inputStream) throws IOException {
+        writeDownloadHeaders(response, filename, contentType, inline);
 
         ServletOutputStream outputStream = response.getOutputStream();
         IOUtils.copy(inputStream, outputStream);
@@ -65,12 +93,12 @@ class ResponseUtil {
      * @param filename    文件名
      * @param contentType 文件类型
      */
-    public static void writeDownloadHeaders(HttpServletResponse response, String filename, String contentType) {
+    public static void writeDownloadHeaders(HttpServletResponse response, String filename, String contentType, boolean inline) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl(CacheControl.noCache().mustRevalidate());
         headers.setPragma("no-cache");
         headers.setExpires(0);
-        headers.setContentDisposition(ContentDisposition.builder("attachment")
+        headers.setContentDisposition(ContentDisposition.builder(inline ? "inline" : "attachment")
                 .filename(filename, StandardCharsets.UTF_8)
                 .build());
 

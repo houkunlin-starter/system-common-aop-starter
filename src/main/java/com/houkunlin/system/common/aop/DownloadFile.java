@@ -38,6 +38,11 @@ public @interface DownloadFile {
     String contentType() default MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
     /**
+     * 浏览器预览，需要与 {@link #contentType()} 配合使用。
+     */
+    boolean inline() default false;
+
+    /**
      * 强制打包压缩
      */
     boolean forceCompress() default false;
