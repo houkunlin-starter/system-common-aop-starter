@@ -4,6 +4,8 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.houkunlin.system.common.aop.bean.ExcelDownloadBean;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -526,6 +528,52 @@ class DownloadExcelControllerTest {
             assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
             assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
         }
+    }
+
+    @Test
+    void m23() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m23"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(CONTENT_TYPE))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
+                    assertEquals(data.size(), objects.size());
+                    for (int i = 0; i < objects.size(); i++) {
+                        assertEquals(data.get(i).getName(), objects.get(i).get(0));
+                        assertEquals(String.valueOf(data.get(i).getAge()), objects.get(i).get(1));
+                        assertEquals(data.get(i).getAddress(), objects.get(i).get(2));
+                        assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objects.get(i).get(3));
+                    }
+                }))
+                .headRowNumber(1)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objectList.get(i).get(3));
+        }
+
+        XSSFWorkbook sheets = new XSSFWorkbook(new ByteArrayInputStream(contentAsByteArray));
+        XSSFSheet sheet1 = sheets.getSheet("Sheet1");
+        assertEquals(30.0, sheet1.getRow(0).getHeightInPoints());
+        assertEquals(25.0, sheet1.getRow(1).getHeightInPoints());
+        assertEquals("宋体", sheet1.getRow(0).getCell(0).getCellStyle().getFont().getFontName());
     }
 
     @Test

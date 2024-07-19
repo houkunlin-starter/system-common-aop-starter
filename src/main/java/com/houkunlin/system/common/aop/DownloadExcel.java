@@ -1,10 +1,11 @@
 package com.houkunlin.system.common.aop;
 
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.AbstractExcelWriterParameterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
-import org.springframework.http.MediaType;
+import com.alibaba.excel.write.handler.WriteHandler;
 
 import java.io.File;
 import java.io.InputStream;
@@ -111,4 +112,18 @@ public @interface DownloadExcel {
      * @see AbstractExcelWriterParameterBuilder#needHead(Boolean)
      */
     boolean needHead() default true;
+
+    /**
+     * 拦截处理 Excel 写入。
+     *
+     * @see AbstractExcelWriterParameterBuilder#registerWriteHandler(WriteHandler)
+     */
+    Class<? extends WriteHandler>[] writeHandlers() default {};
+
+    /**
+     * 自定义类型转换覆盖默认值。
+     *
+     * @see AbstractParameterBuilder#registerConverter(Converter)
+     */
+    Class<? extends Converter>[] converters() default {};
 }

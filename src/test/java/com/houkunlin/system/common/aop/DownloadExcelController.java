@@ -100,4 +100,10 @@ public class DownloadExcelController {
     public List<ExcelDownloadBean> m22() {
         return data;
     }
+
+    @DownloadExcel(filename = "用户信息", useDefaultStyle = false, dataClass = ExcelDownloadBean.class, writeHandlers = {DownloadExcelCustomWriteHandler.class})
+    @GetMapping("/m23")
+    public List<ExcelDownloadBean> m23() {
+        return data;
+    }
 }

@@ -1,8 +1,10 @@
 package com.houkunlin.system.common.aop;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
+import com.alibaba.excel.write.handler.WriteHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +12,14 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
@@ -33,6 +38,7 @@ public class DownloadExcelAspect {
     private final TemplateParser templateParser;
     private final DownloadPoiHandler downloadPoiHandler;
     private final HttpServletResponse response;
+    private final ApplicationContext applicationContext;
 
     @Around("@annotation(annotation)")
     public Object doBefore(ProceedingJoinPoint pjp, DownloadExcel annotation) throws Throwable {
@@ -54,7 +60,7 @@ public class DownloadExcelAspect {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void renderExcel(ProceedingJoinPoint pjp, DownloadExcel annotation, Collection<?> data) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -93,6 +99,20 @@ public class DownloadExcelAspect {
         } else {
             excelWriterSheetBuilder = writerBuilder.sheet("Sheet1");
         }
+        Class<? extends WriteHandler>[] writeHandlers = annotation.writeHandlers();
+        for (Class<? extends WriteHandler> writeHandler : writeHandlers) {
+            WriteHandler instance = getInstance(writeHandler);
+            if (instance != null) {
+                excelWriterSheetBuilder.registerWriteHandler(instance);
+            }
+        }
+        Class<? extends Converter>[] converters = annotation.converters();
+        for (Class<? extends Converter> converter : converters) {
+            Converter instance = getInstance(converter);
+            if (instance != null) {
+                excelWriterSheetBuilder.registerConverter(instance);
+            }
+        }
         if (isNotTemplate) {
             excelWriterSheetBuilder.doWrite(data);
         } else {
@@ -116,5 +136,20 @@ public class DownloadExcelAspect {
         //         .contentLength(byteArray.length)
         //         .body(byteArray);
         // .body(new InputStreamResource(new ByteArrayInputStream(byteArray)));
+    }
+
+    private <T> T getInstance(Class<T> clazz) {
+        String[] beanNamesForType = applicationContext.getBeanNamesForType(clazz);
+        if (beanNamesForType.length > 0) {
+            return clazz.cast(applicationContext.getBean(beanNamesForType[0]));
+        }
+        try {
+            Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();
+            return declaredConstructor.newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            log.error("实例化 {} 对象出现异常", clazz, e);
+        }
+        return null;
     }
 }
