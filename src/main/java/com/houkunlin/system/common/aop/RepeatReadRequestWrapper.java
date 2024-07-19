@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 @Getter
 public class RepeatReadRequestWrapper extends HttpServletRequestWrapper {
     private final byte[] bodyBytes;
+    private final boolean repeatReader = true;
 
     public RepeatReadRequestWrapper(HttpServletRequest request, ServletResponse response) throws IOException {
         super(request);
