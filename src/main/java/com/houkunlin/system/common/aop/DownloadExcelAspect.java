@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
@@ -60,7 +62,7 @@ public class DownloadExcelAspect {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"unchecked"})
     private void renderExcel(ProceedingJoinPoint pjp, DownloadExcel annotation, Collection<?> data) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -99,20 +101,20 @@ public class DownloadExcelAspect {
         } else {
             excelWriterSheetBuilder = writerBuilder.sheet("Sheet1");
         }
-        Class<? extends WriteHandler>[] writeHandlers = annotation.writeHandlers();
-        for (Class<? extends WriteHandler> writeHandler : writeHandlers) {
-            WriteHandler instance = getInstance(writeHandler);
-            if (instance != null) {
-                excelWriterSheetBuilder.registerWriteHandler(instance);
-            }
+
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
+        Method method = signature.getMethod();
+
+        if (method.isAnnotationPresent(DownloadExcelWriteHandler.class)) {
+            DownloadExcelWriteHandler downloadExcelWriteHandler = method.getAnnotation(DownloadExcelWriteHandler.class);
+            loadWriteHandler(excelWriterSheetBuilder, downloadExcelWriteHandler.value());
         }
-        Class<? extends Converter>[] converters = annotation.converters();
-        for (Class<? extends Converter> converter : converters) {
-            Converter instance = getInstance(converter);
-            if (instance != null) {
-                excelWriterSheetBuilder.registerConverter(instance);
-            }
+
+        if (method.isAnnotationPresent(DownloadExcelConverter.class)) {
+            DownloadExcelConverter downloadExcelConverter = method.getAnnotation(DownloadExcelConverter.class);
+            loadConverter(excelWriterSheetBuilder, downloadExcelConverter.value());
         }
+
         if (isNotTemplate) {
             excelWriterSheetBuilder.doWrite(data);
         } else {
@@ -136,6 +138,25 @@ public class DownloadExcelAspect {
         //         .contentLength(byteArray.length)
         //         .body(byteArray);
         // .body(new InputStreamResource(new ByteArrayInputStream(byteArray)));
+    }
+
+    private void loadWriteHandler(ExcelWriterSheetBuilder excelWriterSheetBuilder, Class<? extends WriteHandler>[] writeHandlers) {
+        for (Class<? extends WriteHandler> writeHandler : writeHandlers) {
+            WriteHandler instance = getInstance(writeHandler);
+            if (instance != null) {
+                excelWriterSheetBuilder.registerWriteHandler(instance);
+            }
+        }
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    private void loadConverter(ExcelWriterSheetBuilder excelWriterSheetBuilder, Class<? extends Converter>[] converters) {
+        for (Class<? extends Converter> converter : converters) {
+            Converter instance = getInstance(converter);
+            if (instance != null) {
+                excelWriterSheetBuilder.registerConverter(instance);
+            }
+        }
     }
 
     private <T> T getInstance(Class<T> clazz) {

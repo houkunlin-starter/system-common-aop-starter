@@ -114,18 +114,4 @@ public @interface DownloadExcel {
      * @see AbstractExcelWriterParameterBuilder#needHead(Boolean)
      */
     boolean needHead() default true;
-
-    /**
-     * 拦截处理 Excel 写入。
-     *
-     * @see AbstractExcelWriterParameterBuilder#registerWriteHandler(WriteHandler)
-     */
-    Class<? extends WriteHandler>[] writeHandlers() default {};
-
-    /**
-     * 自定义类型转换覆盖默认值。
-     *
-     * @see AbstractParameterBuilder#registerConverter(Converter)
-     */
-    Class<? extends Converter>[] converters() default {};
 }

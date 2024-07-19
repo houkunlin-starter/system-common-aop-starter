@@ -1,6 +1,5 @@
 package com.houkunlin.system.common.aop.style;
 
-import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
@@ -11,8 +10,6 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.DefaultStyle;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import org.apache.poi.ss.usermodel.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
@@ -22,8 +19,6 @@ import java.util.Collections;
  * @author HouKunLin
  * @see DefaultStyle
  */
-@Component
-@ConditionalOnClass(EasyExcel.class)
 public class ExcelDefaultStyle extends HorizontalCellStyleStrategy implements SheetWriteHandler, RowWriteHandler {
     public ExcelDefaultStyle() {
         super();
