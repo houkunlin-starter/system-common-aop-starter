@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ContentDisposition;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -25,7 +24,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -60,10 +58,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).get(0));
                         assertEquals(String.valueOf(data.get(i).getAge()), objects.get(i).get(1));
@@ -76,7 +73,14 @@ class DownloadExcelControllerTest {
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
                 .sheet("Sheet1")
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objectList.get(i).get(3));
+        }
     }
 
     @Test
@@ -94,10 +98,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).getName());
                         assertEquals(data.get(i).getAge(), objects.get(i).getAge());
@@ -110,7 +113,14 @@ class DownloadExcelControllerTest {
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
                 .sheet("Sheet1")
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).getName());
+            assertEquals(data.get(i).getAge(), objectList.get(i).getAge());
+            assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
+            assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
+        }
     }
 
     @Test
@@ -128,10 +138,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).get(0));
                         assertEquals(String.valueOf(data.get(i).getAge()), objects.get(i).get(1));
@@ -144,7 +153,14 @@ class DownloadExcelControllerTest {
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
                 .sheet("Sheet1")
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objectList.get(i).get(3));
+        }
     }
 
     @Test
@@ -162,10 +178,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).get(0));
                         assertEquals(String.valueOf(data.get(i).getAge()), objects.get(i).get(1));
@@ -178,7 +193,14 @@ class DownloadExcelControllerTest {
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
                 .sheet()
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objectList.get(i).get(3));
+        }
     }
 
     @Test
@@ -196,10 +218,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).get(0));
                         assertEquals(String.valueOf(data.get(i).getAge()), objects.get(i).get(1));
@@ -212,7 +233,14 @@ class DownloadExcelControllerTest {
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
                 .sheet("用户信息")
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objectList.get(i).get(3));
+        }
     }
 
     @Test
@@ -230,10 +258,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).getName());
                         assertEquals(data.get(i).getAge(), objects.get(i).getAge());
@@ -245,8 +272,15 @@ class DownloadExcelControllerTest {
                 .excelType(excelType)
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
-                .sheet("用户信息")
-                .doRead();
+                .sheet("Sheet1")
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).getName());
+            assertEquals(data.get(i).getAge(), objectList.get(i).getAge());
+            assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
+            assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
+        }
     }
 
     @Test
@@ -264,10 +298,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).get(0));
                         assertEquals(String.valueOf(data.get(i).getAge()), objects.get(i).get(1));
@@ -279,8 +312,15 @@ class DownloadExcelControllerTest {
                 .excelType(excelType)
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
-                .sheet("用户信息")
-                .doRead();
+                .sheet("Sheet1")
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objectList.get(i).get(3));
+        }
     }
 
     @Test
@@ -298,23 +338,29 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).get(0));
                         assertEquals(String.valueOf(data.get(i).getAge()), objects.get(i).get(1));
                         assertEquals(data.get(i).getAddress(), objects.get(i).get(2));
-                        assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objects.get(i).get(3));
+                        assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime().plusYears(4).plusDays(1)), objects.get(i).get(3));
                     }
                 }))
                 .headRowNumber(0)
                 .excelType(excelType)
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(true)
-                .sheet("用户信息")
-                .doRead();
+                .sheet("Sheet1")
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime().plusYears(4).plusDays(1)), objectList.get(i).get(3));
+        }
     }
 
     @Test
@@ -336,23 +382,29 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).getName());
                         assertEquals(data.get(i).getAge(), objects.get(i).getAge());
-                        assertEquals("地址", objects.get(i).getAddress());
-                        assertNull(objects.get(i).getTime());
+                        assertEquals(data.get(i).getAddress(), objects.get(i).getAddress());
+                        assertEquals(data.get(i).getTime(), objects.get(i).getTime());
                     }
                 }))
                 .headRowNumber(1)
                 .excelType(excelType)
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
-                .sheet("用户信息")
-                .doRead();
+                .sheet("Sheet1")
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).getName());
+            assertEquals(data.get(i).getAge(), objectList.get(i).getAge());
+            assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
+            assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
+        }
     }
 
     @Test
@@ -370,10 +422,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).getName());
                         assertEquals(data.get(i).getAge(), objects.get(i).getAge());
@@ -387,7 +438,14 @@ class DownloadExcelControllerTest {
                 .use1904windowing(false)
                 .password("123456A")
                 .sheet()
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).getName());
+            assertEquals(data.get(i).getAge(), objectList.get(i).getAge());
+            assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
+            assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
+        }
     }
 
     @Test
@@ -405,10 +463,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).getName());
                         assertEquals(data.get(i).getAge(), objects.get(i).getAge());
@@ -421,7 +478,14 @@ class DownloadExcelControllerTest {
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
                 .sheet("Sheet1")
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).getName());
+            assertEquals(data.get(i).getAge(), objectList.get(i).getAge());
+            assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
+            assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
+        }
     }
 
     @Test
@@ -439,10 +503,9 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
-                    List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> data = downloadExcelController.getData();
+        List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
-
                     for (int i = 0; i < objects.size(); i++) {
                         assertEquals(data.get(i).getName(), objects.get(i).getName());
                         assertEquals(data.get(i).getAge(), objects.get(i).getAge());
@@ -455,7 +518,14 @@ class DownloadExcelControllerTest {
                 .charset(StandardCharsets.UTF_8)
                 .use1904windowing(false)
                 .sheet("Sheet1")
-                .doRead();
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).getName());
+            assertEquals(data.get(i).getAge(), objectList.get(i).getAge());
+            assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
+            assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
+        }
     }
 
     @Test
