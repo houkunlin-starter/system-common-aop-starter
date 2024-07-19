@@ -41,6 +41,8 @@
 
 ### Excel导出下载 `DownloadExcel`
 
+需要在自己的项目中引入 `EasyExcel` 依赖（例如：`implementation "com.alibaba:easyexcel:4.0.1"`），本工具不包含该依赖。
+
 | 参数               | 默认值                                                                   | 说明                                  |
 |------------------|-----------------------------------------------------------------------|-------------------------------------|
 | filename         |                                                                       | 文件下载名称                              |
@@ -97,6 +99,8 @@ public DownloadPoiHandler downloadPoiHandler() {
 - `@DownloadExcel(filename = "Excel 导出", withTemplate = "oss:/upload/template.xlsx")`
 
 ### Word导出下载 `DownloadWord`
+
+需要在自己的项目中引入 `POI-TL` 依赖（例如：`implementation "com.deepoove:poi-tl:1.12.2"`），本工具不包含该依赖。
 
 | 参数           | 默认值                                                                         | 说明                                          |
 |--------------|-----------------------------------------------------------------------------|---------------------------------------------|
