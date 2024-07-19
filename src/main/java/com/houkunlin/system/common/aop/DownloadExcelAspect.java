@@ -2,6 +2,7 @@ package com.houkunlin.system.common.aop;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +73,7 @@ public class DownloadExcelAspect {
         if (!annotation.password().isBlank()) {
             writerBuilder.password(annotation.password());
         }
+        boolean isNotTemplate = true;
         String withTemplate = annotation.withTemplate();
         if (!withTemplate.isBlank()) {
             try {
@@ -80,14 +82,21 @@ public class DownloadExcelAspect {
                     log.warn("有传入模板文件名称，但并未正常得到模板文件内容：{}", withTemplate);
                 }
                 writerBuilder.withTemplate(templateInputStream);
+                isNotTemplate = false;
             } catch (IOException e) {
                 log.warn("读取 Excel 模板文件 {} 失败", withTemplate);
             }
         }
+        ExcelWriterSheetBuilder excelWriterSheetBuilder;
         if (!annotation.sheetName().isBlank()) {
-            writerBuilder.sheet(annotation.sheetName()).doWrite(data);
+            excelWriterSheetBuilder = writerBuilder.sheet(annotation.sheetName());
         } else {
-            writerBuilder.sheet("Sheet1").doWrite(data);
+            excelWriterSheetBuilder = writerBuilder.sheet("Sheet1");
+        }
+        if (isNotTemplate) {
+            excelWriterSheetBuilder.doWrite(data);
+        } else {
+            excelWriterSheetBuilder.doFill(data);
         }
 
         String filename = annotation.filename();
