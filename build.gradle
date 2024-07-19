@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.0.3'
+version = '1.0.4'
 description = """
 常用的 AOP 注解功能。
 Commonly used AOP annotation features.
@@ -44,13 +44,17 @@ dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'com.alibaba:easyexcel:4.0.1'
-    compileOnly 'com.deepoove:poi-tl:1.12.2'
+    compileOnly('com.deepoove:poi-tl:1.12.2') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
     testImplementation 'org.springframework.boot:spring-boot-starter-aop'
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation 'com.alibaba:easyexcel:4.0.1'
-    testImplementation 'com.deepoove:poi-tl:1.12.2'
+    testImplementation('com.deepoove:poi-tl:1.12.2') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
     testImplementation('com.github.fppt:jedis-mock:1.1.2') {
         exclude group: 'org.json', module: 'json'
     }
