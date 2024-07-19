@@ -38,8 +38,6 @@ repositories {
 }
 
 dependencies {
-    api('com.google.guava:guava:33.2.1-jre')
-//    implementation('com.houkunlin:system-common-starter:1.2.9')
     compileOnly 'org.springframework.boot:spring-boot-starter-aop'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'

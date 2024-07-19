@@ -1,11 +1,11 @@
 package com.houkunlin.system.common.aop;
 
-import com.google.common.io.ByteStreams;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import lombok.Getter;
+import org.springframework.util.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -26,7 +26,7 @@ public class RepeatReadRequestWrapper extends HttpServletRequestWrapper {
         super(request);
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        this.bodyBytes = ByteStreams.toByteArray(request.getInputStream());
+        this.bodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
     }
 
     @Override
