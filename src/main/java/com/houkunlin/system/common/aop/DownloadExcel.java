@@ -6,6 +6,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.AbstractExcelWriterParameterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.style.DefaultStyle;
 
 import java.io.File;
 import java.io.InputStream;
@@ -103,6 +104,7 @@ public @interface DownloadExcel {
      * 是否使用默认的样式
      *
      * @see AbstractExcelWriterParameterBuilder#useDefaultStyle(Boolean)
+     * @see DefaultStyle
      */
     boolean useDefaultStyle() default true;
 
