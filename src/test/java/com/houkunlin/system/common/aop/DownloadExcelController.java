@@ -2,7 +2,6 @@ package com.houkunlin.system.common.aop;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.houkunlin.system.common.aop.bean.ExcelDownloadBean;
-import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +18,9 @@ import java.util.List;
 @RequestMapping("/DownloadExcel/")
 @RequiredArgsConstructor
 public class DownloadExcelController {
-    private final List<ExcelDownloadBean> data = new ArrayList<>();
+    public static final List<ExcelDownloadBean> data = new ArrayList<>();
 
-    @PostConstruct
-    public void post() {
+    static {
         LocalDateTime localDateTime = LocalDate.now().atTime(0, 0, 0, 0);
         for (int i = 1; i <= 6; i++) {
             data.add(new ExcelDownloadBean("姓名 " + i, 20 + i, "地址 " + i, localDateTime));

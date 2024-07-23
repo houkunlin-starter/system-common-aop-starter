@@ -41,9 +41,8 @@ class DownloadExcelControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private DownloadExcelController downloadExcelController;
-    @Autowired
     private TestBean testBean;
+    private List<ExcelDownloadBean> data = DownloadExcelController.data;
 
     @Test
     void m11() throws Exception {
@@ -60,7 +59,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -100,7 +98,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -140,7 +137,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -180,7 +176,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -220,7 +215,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -260,7 +254,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -300,7 +293,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -340,7 +332,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -384,7 +375,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -424,7 +414,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -465,7 +454,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -499,13 +487,12 @@ class DownloadExcelControllerTest {
                 .andExpect(header().string("pragma", "no-cache"))
                 .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
-                        .filename("用户信息 - " + downloadExcelController.getData().size() + " 条数据" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .filename("用户信息 - " + data.size() + " 条数据" + excelType.getValue(), StandardCharsets.UTF_8)
                         .build().toString()))
                 .andExpect(content().contentType(CONTENT_TYPE))
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<ExcelDownloadBean> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -545,7 +532,6 @@ class DownloadExcelControllerTest {
                 .andReturn();
         byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
 
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray), new PageReadListener<Map<Object, Object>>(objects -> {
                     assertEquals(data.size(), objects.size());
                     for (int i = 0; i < objects.size(); i++) {
@@ -578,7 +564,6 @@ class DownloadExcelControllerTest {
 
     @Test
     void getData() {
-        List<ExcelDownloadBean> data = downloadExcelController.getData();
         assertEquals(6, data.size());
         for (int i = 1; i <= 6; i++) {
             assertEquals("姓名 " + i, data.get(i - 1).getName());
