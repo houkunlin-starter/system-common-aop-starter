@@ -3,12 +3,12 @@ package com.houkunlin.system.common.aop;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import com.google.common.io.ByteStreams;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ class DownloadPoiHandlerTest {
     void getTemplate() throws IOException {
         InputStream inputStream = downloadPoiHandler.getTemplate("classpath:test-file.txt");
         assertNotNull(inputStream);
-        byte[] byteArray = ByteStreams.toByteArray(inputStream);
+        byte[] byteArray = StreamUtils.copyToByteArray(inputStream);
         assertTrue(new String(byteArray).startsWith(FILE_TEXT));
 
         // 创建日志记录器实例和 ListAppender 以捕获日志事件
@@ -39,7 +39,7 @@ class DownloadPoiHandlerTest {
 
         inputStream = downloadPoiHandler.getTemplate("test-file.txt");
         assertNotNull(inputStream);
-        byteArray = ByteStreams.toByteArray(inputStream);
+        byteArray = StreamUtils.copyToByteArray(inputStream);
         assertTrue(new String(byteArray).startsWith(FILE_TEXT));
 
         inputStream = downloadPoiHandler.getTemplate("test-file1.txt");
@@ -56,12 +56,12 @@ class DownloadPoiHandlerTest {
     void getTemplateByClassPath() throws IOException {
         InputStream inputStream = downloadPoiHandler.getTemplate("classpath:test-file.txt");
         assertNotNull(inputStream);
-        byte[] byteArray = ByteStreams.toByteArray(inputStream);
+        byte[] byteArray = StreamUtils.copyToByteArray(inputStream);
         assertTrue(new String(byteArray).startsWith(FILE_TEXT));
 
         inputStream = downloadPoiHandler.getTemplate("test-file.txt");
         assertNotNull(inputStream);
-        byteArray = ByteStreams.toByteArray(inputStream);
+        byteArray = StreamUtils.copyToByteArray(inputStream);
         assertTrue(new String(byteArray).startsWith(FILE_TEXT));
     }
 }
