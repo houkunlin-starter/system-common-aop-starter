@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @RestController
@@ -75,7 +76,7 @@ public class DownloadExcelController {
         return data;
     }
 
-    @DownloadExcel(filename = "用户信息", dataClass = ExcelDownloadBean.class, withTemplate = "classpath:template.xlsx")
+    @DownloadExcel(filename = "用户信息", dataClass = ExcelDownloadBean.class, withTemplate = "classpath:template-default-list.xlsx")
     @GetMapping("/m19")
     public List<ExcelDownloadBean> m19() {
         return data;
@@ -104,5 +105,23 @@ public class DownloadExcelController {
     @GetMapping("/m23")
     public List<ExcelDownloadBean> m23() {
         return data;
+    }
+
+    @DownloadExcel(filename = "用户信息", withTemplate = "classpath:template-map-default.xlsx")
+    @GetMapping("/m24")
+    public Map<String, Object> m24() {
+        return Map.of("data", data, "year", "2024");
+    }
+
+    @DownloadExcel(filename = "用户信息", withTemplate = "classpath:template-map-horizontal.xlsx")
+    @GetMapping("/m25")
+    public Map<String, Object> m25() {
+        return Map.of("data", data, "data" + DownloadExcel.HORIZONTAL_SUFFIX, true);
+    }
+
+    @DownloadExcel(filename = "用户信息", withTemplate = "classpath:template-map-horizontal.xlsx")
+    @GetMapping("/m26")
+    public Map<String, Object> m26() {
+        return Map.of("data", data, "data" + DownloadExcel.HORIZONTAL_SUFFIX, "true");
     }
 }

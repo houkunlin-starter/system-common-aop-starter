@@ -1,11 +1,9 @@
 package com.houkunlin.system.common.aop;
 
-import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.AbstractExcelWriterParameterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
-import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.style.DefaultStyle;
 
 import java.io.File;
@@ -23,6 +21,27 @@ import java.nio.charset.Charset;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DownloadExcel {
+    /**
+     * 水平渲染配置的 KEY 后缀。主要用在接口方法返回 map 类型数据中存在 List 列表数据进行模板填充时使用。
+     * <p>例如，返回了如下 map 信息</p>
+     * <pre><code>
+     * Map&lt;String, Object&gt; map = Map.of("name", "姓名",
+     *                                  "list1", List.of(1,2,3),
+     *                                  "list2", new FillWrapper(List.of(1,2,3))
+     *                                  );
+     * </code></pre>
+     * <p>当我们想要对 list1 和 list2 列表进行水平方向渲染时，则需要做如下配合</p>
+     * <pre><code>
+     * Map&lt;String, Object&gt; map = Map.of("name", "姓名",
+     *                                  "list1", List.of(1,2,3),
+     *                                  "list1.direction.horizontal", true,
+     *                                  "list2", new FillWrapper(List.of(1,2,3)),
+     *                                  "list2.direction.horizontal", "true"
+     *                                  );
+     * </code></pre>
+     */
+    String HORIZONTAL_SUFFIX = ".direction.horizontal";
+
     /**
      * 下载的文件名
      * <p>可自行实现 {@link TemplateParser} 接口来解析字符串模板，默认提供 {@link TemplateParserDefaultImpl} 来支持 SpEL 模板表达式解析

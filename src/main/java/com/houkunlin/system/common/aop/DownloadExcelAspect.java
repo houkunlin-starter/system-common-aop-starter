@@ -1,10 +1,14 @@
 package com.houkunlin.system.common.aop;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
-import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.fill.FillConfig;
+import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,15 +19,18 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Excel 导出下载
@@ -47,12 +54,14 @@ public class DownloadExcelAspect {
         try {
             Object object = pjp.proceed();
             if (object instanceof Collection<?> collection) {
-                try {
-                    renderExcel(pjp, annotation, collection);
-                } catch (IOException e) {
-                    log.error("下载 Excel 文件失败，写 Excel 文件流失败", e);
-                    return object;
-                }
+                String filename = getFilename(pjp, annotation, object);
+                ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                renderExcel(response.getOutputStream(), pjp, annotation, collection);
+                return null;
+            } else if (object instanceof Map<?, ?> map) {
+                String filename = getFilename(pjp, annotation, object);
+                ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                renderExcel(response.getOutputStream(), pjp, annotation, map);
                 return null;
             }
             return object;
@@ -62,16 +71,129 @@ public class DownloadExcelAspect {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    private void renderExcel(ProceedingJoinPoint pjp, DownloadExcel annotation, Collection<?> data) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    /**
+     * 渲染 Excel 内容
+     *
+     * @param outputStream 数据写入对象
+     * @param pjp          切点对象
+     * @param annotation   注解内容
+     * @param data         返回的数据对象
+     */
+    private void renderExcel(OutputStream outputStream, ProceedingJoinPoint pjp, DownloadExcel annotation, Collection<?> data) {
+        ExcelWriterBuilder excelWriterBuilder = getExcelWriterBuilder(outputStream, pjp, annotation);
 
+        boolean isNotTemplate = !useTemplate(excelWriterBuilder, annotation);
+
+        try (ExcelWriter excelWriter = excelWriterBuilder.build()) {
+            WriteSheet writeSheet;
+            if (!annotation.sheetName().isBlank()) {
+                writeSheet = EasyExcel.writerSheet(annotation.sheetName()).build();
+            } else {
+                writeSheet = EasyExcel.writerSheet("Sheet1").build();
+            }
+
+            if (isNotTemplate) {
+                excelWriter.write(data, writeSheet);
+            } else {
+                excelWriter.fill(data, writeSheet);
+            }
+            excelWriter.finish();
+        }
+    }
+
+    /**
+     * 渲染 Excel 内容
+     *
+     * @param outputStream 数据写入对象
+     * @param pjp          切点对象
+     * @param annotation   注解内容
+     * @param map          返回的数据对象
+     */
+    private void renderExcel(OutputStream outputStream, ProceedingJoinPoint pjp, DownloadExcel annotation, Map<?, ?> map) {
+        ExcelWriterBuilder excelWriterBuilder = getExcelWriterBuilder(outputStream, pjp, annotation);
+
+        useTemplate(excelWriterBuilder, annotation);
+
+        try (ExcelWriter excelWriter = excelWriterBuilder.build()) {
+            WriteSheet writeSheet;
+            if (!annotation.sheetName().isBlank()) {
+                writeSheet = EasyExcel.writerSheet(annotation.sheetName()).build();
+            } else {
+                writeSheet = EasyExcel.writerSheet("Sheet1").build();
+            }
+
+            map.forEach((k, v) -> {
+                if (v instanceof FillWrapper fillWrapper) {
+                    if (fillWrapper.getName() == null) {
+                        fillWrapper.setName(ObjectUtils.getDisplayString(k));
+                    }
+                    FillConfig fillConfig = getFillConfig(map, k);
+                    excelWriter.fill(fillWrapper, fillConfig, writeSheet);
+                } else if (v instanceof Collection<?> collection) {
+                    FillConfig fillConfig = getFillConfig(map, k);
+                    excelWriter.fill(new FillWrapper(ObjectUtils.getDisplayString(k), collection), fillConfig, writeSheet);
+                } else {
+                    excelWriter.fill(Map.of(k, v), writeSheet);
+                }
+            });
+            excelWriter.finish();
+        }
+    }
+
+    /**
+     * 获取填充配置（主要判断该 KEY 对应的列表数据是否需要水平方向填充）
+     *
+     * @param map 返回的map数据
+     * @param key 当前key值
+     * @return 当前key数据对应的填充配置
+     */
+    private FillConfig getFillConfig(Map<?, ?> map, Object key) {
+        Object horizontal = map.get(key + DownloadExcel.HORIZONTAL_SUFFIX);
+        if (horizontal == null) {
+            return null;
+        }
+        if (horizontal instanceof Boolean b && b) {
+            return FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+        }
+        if (horizontal instanceof String s && "true".equalsIgnoreCase(s)) {
+            return FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+        }
+        return null;
+    }
+
+    /**
+     * 获取下载文件名（文件名可能是模板字符串）
+     *
+     * @param pjp        切点对象
+     * @param annotation 注解对象
+     * @param data       返回值的数据
+     * @return 文件名（经过模板处理后的字符串）
+     */
+    @SuppressWarnings({"unchecked"})
+    private String getFilename(ProceedingJoinPoint pjp, DownloadExcel annotation, Object data) {
+        String filename = annotation.filename();
+        if (templateParser.isTemplate(filename)) {
+            Object context = templateParser.createContext(pjp, data, null);
+            filename = templateParser.parseTemplate(filename, context);
+        }
+        return filename;
+    }
+
+    /**
+     * 获取 Excel 写入对象
+     *
+     * @param outputStream 数据写入对象
+     * @param pjp          切点对象
+     * @param annotation   注解内容
+     * @return Excel 写入对象
+     */
+    private ExcelWriterBuilder getExcelWriterBuilder(OutputStream outputStream, ProceedingJoinPoint pjp, DownloadExcel annotation) {
         Class<?> dataClass = annotation.dataClass();
         if (dataClass == Object.class) {
             dataClass = null;
         }
 
-        ExcelWriterBuilder writerBuilder = EasyExcel.write(byteArrayOutputStream, dataClass)
+        ExcelWriterBuilder writerBuilder = EasyExcel.write(outputStream, dataClass)
                 .excelType(annotation.excelType())
                 .inMemory(annotation.inMemory())
                 .charset(Charset.forName(annotation.charset()))
@@ -81,7 +203,32 @@ public class DownloadExcelAspect {
         if (!annotation.password().isBlank()) {
             writerBuilder.password(annotation.password());
         }
-        boolean isNotTemplate = true;
+
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
+        Method method = signature.getMethod();
+
+        if (method.isAnnotationPresent(DownloadExcelWriteHandler.class)) {
+            DownloadExcelWriteHandler downloadExcelWriteHandler = method.getAnnotation(DownloadExcelWriteHandler.class);
+            loadWriteHandler(downloadExcelWriteHandler.value(), writerBuilder::registerWriteHandler);
+        }
+
+        if (method.isAnnotationPresent(DownloadExcelConverter.class)) {
+            DownloadExcelConverter downloadExcelConverter = method.getAnnotation(DownloadExcelConverter.class);
+            loadConverter(downloadExcelConverter.value(), writerBuilder::registerConverter);
+        }
+
+        return writerBuilder;
+    }
+
+    /**
+     * 使用模板文件
+     *
+     * @param writerBuilder Excel 写入构建对象
+     * @param annotation    注解内容
+     * @return 是否使用模板文件
+     */
+    private boolean useTemplate(ExcelWriterBuilder writerBuilder, DownloadExcel annotation) {
+        boolean isTemplate = false;
         String withTemplate = annotation.withTemplate();
         if (!withTemplate.isBlank()) {
             try {
@@ -90,75 +237,52 @@ public class DownloadExcelAspect {
                     log.warn("有传入模板文件名称，但并未正常得到模板文件内容：{}", withTemplate);
                 }
                 writerBuilder.withTemplate(templateInputStream);
-                isNotTemplate = false;
+                isTemplate = true;
             } catch (IOException e) {
                 log.warn("读取 Excel 模板文件 {} 失败", withTemplate);
             }
         }
-        ExcelWriterSheetBuilder excelWriterSheetBuilder;
-        if (!annotation.sheetName().isBlank()) {
-            excelWriterSheetBuilder = writerBuilder.sheet(annotation.sheetName());
-        } else {
-            excelWriterSheetBuilder = writerBuilder.sheet("Sheet1");
-        }
-
-        MethodSignature signature = (MethodSignature) pjp.getSignature();
-        Method method = signature.getMethod();
-
-        if (method.isAnnotationPresent(DownloadExcelWriteHandler.class)) {
-            DownloadExcelWriteHandler downloadExcelWriteHandler = method.getAnnotation(DownloadExcelWriteHandler.class);
-            loadWriteHandler(excelWriterSheetBuilder, downloadExcelWriteHandler.value());
-        }
-
-        if (method.isAnnotationPresent(DownloadExcelConverter.class)) {
-            DownloadExcelConverter downloadExcelConverter = method.getAnnotation(DownloadExcelConverter.class);
-            loadConverter(excelWriterSheetBuilder, downloadExcelConverter.value());
-        }
-
-        if (isNotTemplate) {
-            excelWriterSheetBuilder.doWrite(data);
-        } else {
-            excelWriterSheetBuilder.doFill(data);
-        }
-
-        String filename = annotation.filename();
-
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-        if (templateParser.isTemplate(filename)) {
-            Object context = templateParser.createContext(pjp, data, null);
-            filename = templateParser.parseTemplate(filename, context);
-        }
-
-        ResponseUtil.writeDownloadBytes(response, filename + annotation.excelType().getValue(), annotation.contentType(), byteArray);
-
-        // return ResponseEntity.ok()
-        //         .headers(headers)
-        //         .contentType(MediaType.parseMediaType(annotation.contentType()))
-        //         .contentLength(byteArray.length)
-        //         .body(byteArray);
-        // .body(new InputStreamResource(new ByteArrayInputStream(byteArray)));
+        return isTemplate;
     }
 
-    private void loadWriteHandler(ExcelWriterSheetBuilder excelWriterSheetBuilder, Class<? extends WriteHandler>[] writeHandlers) {
+    /**
+     * 加载写处理器
+     *
+     * @param writeHandlers 处理器类列表
+     * @param function      添加处理器方法
+     */
+    private void loadWriteHandler(Class<? extends WriteHandler>[] writeHandlers, Function<WriteHandler, ExcelWriterBuilder> function) {
         for (Class<? extends WriteHandler> writeHandler : writeHandlers) {
             WriteHandler instance = getInstance(writeHandler);
             if (instance != null) {
-                excelWriterSheetBuilder.registerWriteHandler(instance);
+                function.apply(instance);
             }
         }
     }
 
+    /**
+     * 加载转换器
+     *
+     * @param converters 转换器类列表
+     * @param function   添加转换器方法
+     */
     @SuppressWarnings({"rawtypes"})
-    private void loadConverter(ExcelWriterSheetBuilder excelWriterSheetBuilder, Class<? extends Converter>[] converters) {
+    private void loadConverter(Class<? extends Converter>[] converters, Function<Converter<?>, ExcelWriterBuilder> function) {
         for (Class<? extends Converter> converter : converters) {
             Converter instance = getInstance(converter);
             if (instance != null) {
-                excelWriterSheetBuilder.registerConverter(instance);
+                function.apply(instance);
             }
         }
     }
 
+    /**
+     * 获得一个对象的实例
+     *
+     * @param clazz class 对象
+     * @param <T>   对象类型
+     * @return 实例
+     */
     private <T> T getInstance(Class<T> clazz) {
         String[] beanNamesForType = applicationContext.getBeanNamesForType(clazz);
         if (beanNamesForType.length > 0) {

@@ -357,10 +357,6 @@ class DownloadExcelControllerTest {
     }
 
     @Test
-    void post() {
-    }
-
-    @Test
     void m19() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
         MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m19"))
@@ -560,6 +556,136 @@ class DownloadExcelControllerTest {
         assertEquals(30.0, sheet1.getRow(0).getHeightInPoints());
         assertEquals(25.0, sheet1.getRow(1).getHeightInPoints());
         assertEquals("宋体", sheet1.getRow(0).getCell(0).getCellStyle().getFont().getFontName());
+    }
+
+    @Test
+    void m24() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m24"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(CONTENT_TYPE))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray))
+                .headRowNumber(1)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
+                .doReadSync();
+
+        assertEquals(8, objectList.size());
+
+        Map<Object, Object> map1 = objectList.remove(0);
+        assertEquals("统计年份", map1.get(2));
+        assertEquals("2024", map1.get(3));
+
+        Map<Object, Object> map2 = objectList.remove(0);
+        assertEquals("姓名", map2.get(0));
+        assertEquals("年龄", map2.get(1));
+        assertEquals("地址", map2.get(2));
+        assertEquals("注册日期", map2.get(3));
+
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).get(0));
+            assertEquals(String.valueOf(data.get(i).getAge()), objectList.get(i).get(1));
+            assertEquals(data.get(i).getAddress(), objectList.get(i).get(2));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), objectList.get(i).get(3));
+        }
+    }
+
+    @Test
+    void m25() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m25"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(CONTENT_TYPE))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray))
+                .headRowNumber(0)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
+                .doReadSync();
+
+        assertEquals(4, objectList.size());
+
+        Map<Object, Object> row0 = objectList.get(0);
+        Map<Object, Object> row1 = objectList.get(1);
+        Map<Object, Object> row2 = objectList.get(2);
+        Map<Object, Object> row3 = objectList.get(3);
+
+        assertEquals("姓名", row0.get(0));
+        assertEquals("年龄", row1.get(0));
+        assertEquals("地址", row2.get(0));
+        assertEquals("注册日期", row3.get(0));
+
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), row0.get(i + 1));
+            assertEquals(String.valueOf(data.get(i).getAge()), row1.get(i + 1));
+            assertEquals(data.get(i).getAddress(), row2.get(i + 1));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), row3.get(i + 1));
+        }
+    }
+
+    @Test
+    void m26() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m26"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(CONTENT_TYPE))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        List<Map<Object, Object>> objectList = EasyExcel.read(new ByteArrayInputStream(contentAsByteArray))
+                .headRowNumber(0)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
+                .doReadSync();
+
+        assertEquals(4, objectList.size());
+
+        Map<Object, Object> row0 = objectList.get(0);
+        Map<Object, Object> row1 = objectList.get(1);
+        Map<Object, Object> row2 = objectList.get(2);
+        Map<Object, Object> row3 = objectList.get(3);
+
+        assertEquals("姓名", row0.get(0));
+        assertEquals("年龄", row1.get(0));
+        assertEquals("地址", row2.get(0));
+        assertEquals("注册日期", row3.get(0));
+
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), row0.get(i + 1));
+            assertEquals(String.valueOf(data.get(i).getAge()), row1.get(i + 1));
+            assertEquals(data.get(i).getAddress(), row2.get(i + 1));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), row3.get(i + 1));
+        }
     }
 
     @Test
