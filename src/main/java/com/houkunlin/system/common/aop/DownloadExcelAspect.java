@@ -152,11 +152,14 @@ public class DownloadExcelAspect {
         if (horizontal == null) {
             return null;
         }
-        if (horizontal instanceof Boolean b && b) {
-            return FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
-        }
-        if (horizontal instanceof String s && "true".equalsIgnoreCase(s)) {
-            return FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+        if (horizontal instanceof Boolean b) {
+            if (b) {
+                return FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+            }
+        } else if (horizontal instanceof String s) {
+            if ("true".equalsIgnoreCase(s)) {
+                return FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+            }
         }
         return null;
     }
