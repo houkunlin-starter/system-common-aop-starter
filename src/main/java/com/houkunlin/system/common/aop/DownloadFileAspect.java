@@ -43,7 +43,7 @@ public class DownloadFileAspect {
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     @Around("@annotation(annotation)")
-    public Object doBefore(ProceedingJoinPoint pjp, DownloadFile annotation) throws Throwable {
+    public Object doAround(ProceedingJoinPoint pjp, DownloadFile annotation) throws Throwable {
         try {
             Object object = pjp.proceed();
             List<DownloadFileOutput> list;

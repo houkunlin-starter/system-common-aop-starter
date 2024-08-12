@@ -50,7 +50,7 @@ public class DownloadExcelAspect {
     private final ApplicationContext applicationContext;
 
     @Around("@annotation(annotation)")
-    public Object doBefore(ProceedingJoinPoint pjp, DownloadExcel annotation) throws Throwable {
+    public Object doAround(ProceedingJoinPoint pjp, DownloadExcel annotation) throws Throwable {
         try {
             Object object = pjp.proceed();
             if (object instanceof Collection<?> collection) {

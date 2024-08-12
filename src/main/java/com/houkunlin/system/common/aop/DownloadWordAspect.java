@@ -32,7 +32,7 @@ public class DownloadWordAspect {
     private final HttpServletResponse response;
 
     @Around("@annotation(annotation)")
-    public Object doBefore(ProceedingJoinPoint pjp, DownloadWord annotation) throws Throwable {
+    public Object doAround(ProceedingJoinPoint pjp, DownloadWord annotation) throws Throwable {
         try {
             Object object = pjp.proceed();
             try {
