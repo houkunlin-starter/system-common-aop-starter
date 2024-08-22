@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ import java.util.Set;
  */
 @Slf4j
 @Aspect
-@Component
 @RequiredArgsConstructor
 public class RequestRateLimiterAspect {
     private final StringRedisTemplate redisTemplate;

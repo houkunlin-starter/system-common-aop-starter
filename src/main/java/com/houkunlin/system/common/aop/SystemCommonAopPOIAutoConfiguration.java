@@ -1,11 +1,15 @@
 package com.houkunlin.system.common.aop;
 
+import com.alibaba.excel.EasyExcel;
+import com.deepoove.poi.XWPFTemplate;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.POIDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -21,7 +25,7 @@ import java.io.InputStream;
 @ConditionalOnClass(POIDocument.class)
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
-public class SystemCommonAopPOIStarter {
+public class SystemCommonAopPOIAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
@@ -41,5 +45,32 @@ public class SystemCommonAopPOIStarter {
                 return inputStream;
             }
         };
+    }
+
+    @ConditionalOnClass(EasyExcel.class)
+    @Configuration(proxyBeanMethods = false)
+    public static class POIExcelAutoConfiguration {
+        @Bean
+        public DownloadExcelAspect downloadExcelAspect(
+                TemplateParser templateParser,
+                DownloadPoiHandler downloadPoiHandler,
+                HttpServletResponse response,
+                ApplicationContext applicationContext
+        ) {
+            return new DownloadExcelAspect(templateParser, downloadPoiHandler, response, applicationContext);
+        }
+    }
+
+    @ConditionalOnClass(XWPFTemplate.class)
+    @Configuration(proxyBeanMethods = false)
+    public static class POIWordAutoConfiguration {
+        @Bean
+        public DownloadWordAspect downloadWordAspect(
+                TemplateParser templateParser,
+                DownloadPoiHandler downloadPoiHandler,
+                HttpServletResponse response
+        ) {
+            return new DownloadWordAspect(templateParser, downloadPoiHandler, response);
+        }
     }
 }

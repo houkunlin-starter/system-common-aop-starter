@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -21,7 +20,6 @@ import java.util.*;
  */
 @Slf4j
 @Aspect
-@Component
 @RequiredArgsConstructor
 public class AllowIPAspect implements InitializingBean {
     private final HttpServletRequest request;

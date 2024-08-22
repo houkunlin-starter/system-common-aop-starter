@@ -8,8 +8,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,8 +21,6 @@ import java.io.InputStream;
  */
 @Slf4j
 @Aspect
-@Component
-@ConditionalOnClass(XWPFTemplate.class)
 @RequiredArgsConstructor
 public class DownloadWordAspect {
     private final TemplateParser templateParser;

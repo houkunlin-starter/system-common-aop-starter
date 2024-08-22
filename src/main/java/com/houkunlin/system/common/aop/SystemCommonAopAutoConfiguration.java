@@ -1,5 +1,7 @@
 package com.houkunlin.system.common.aop;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.http.HttpHeaders;
@@ -20,16 +22,14 @@ import java.io.InputStream;
 /**
  * @author HouKunLin
  */
-@ComponentScan
 @Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
-public class SystemCommonAopStarter {
+public class SystemCommonAopAutoConfiguration {
     // private final HttpServletRequest request;
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Bean
-    public FilterRegistrationBean someFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<RepeatReadRequestFilter> repeatReadRequestFilterRegistration() {
+        FilterRegistrationBean<RepeatReadRequestFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new RepeatReadRequestFilter());
         registration.addUrlPatterns("/*");
         registration.setName("repeatableFilter");
@@ -79,5 +79,29 @@ public class SystemCommonAopStarter {
                 return inputStream;
             }
         };
+    }
+
+    @Bean
+    public AllowIPAspect allowIPAspect(HttpServletRequest request, AllowIPConfigurationProperties allowIPConfigurationProperties) {
+        return new AllowIPAspect(request, allowIPConfigurationProperties);
+    }
+
+    @Bean
+    public DownloadFileAspect downloadFileAspect(
+            TemplateParser templateParser,
+            DownloadFileHandler downloadFileHandler,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        return new DownloadFileAspect(templateParser, downloadFileHandler, request, response);
+    }
+
+    @Bean
+    public PreventRepeatSubmitAspect preventRepeatSubmitAspect(StringRedisTemplate redisTemplate, PreventRepeatSubmitHandler preventRepeatSubmitHandler) {
+        return new PreventRepeatSubmitAspect(redisTemplate, preventRepeatSubmitHandler);
+    }
+
+    @Bean
+    public RequestRateLimiterAspect requestRateLimiterAspect(StringRedisTemplate redisTemplate, RequestRateLimiterHandler requestRateLimiterHandler) {
+        return new RequestRateLimiterAspect(redisTemplate, requestRateLimiterHandler);
     }
 }

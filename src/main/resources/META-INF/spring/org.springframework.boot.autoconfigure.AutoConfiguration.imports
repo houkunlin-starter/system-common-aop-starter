@@ -1,2 +1,2 @@
-com.houkunlin.system.common.aop.SystemCommonAopStarter
-com.houkunlin.system.common.aop.SystemCommonAopPOIStarter
+com.houkunlin.system.common.aop.SystemCommonAopAutoConfiguration
+com.houkunlin.system.common.aop.SystemCommonAopPOIAutoConfiguration

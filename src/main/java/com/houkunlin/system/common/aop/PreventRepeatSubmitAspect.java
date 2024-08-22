@@ -6,7 +6,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
@@ -18,7 +17,6 @@ import java.time.Duration;
  */
 @Slf4j
 @Aspect
-@Component
 @RequiredArgsConstructor
 public class PreventRepeatSubmitAspect {
     private final StringRedisTemplate redisTemplate;

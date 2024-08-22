@@ -16,9 +16,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
@@ -40,8 +38,6 @@ import java.util.function.Function;
  */
 @Slf4j
 @Aspect
-@Component
-@ConditionalOnClass(EasyExcel.class)
 @RequiredArgsConstructor
 public class DownloadExcelAspect {
     private final TemplateParser templateParser;

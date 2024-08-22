@@ -10,7 +10,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
@@ -31,7 +30,6 @@ import java.util.function.Supplier;
  */
 @Slf4j
 @Aspect
-@Component
 @RequiredArgsConstructor
 public class DownloadFileAspect {
     private final TemplateParser templateParser;
