@@ -411,4 +411,120 @@ class IpToolTest {
     @Test
     void parseInt() {
     }
+
+    @Test
+    void ip2maskInt() {
+        assertEquals(32, IpUtil.ip2maskInt("255.255.255.255"));
+        assertEquals(0, IpUtil.ip2maskInt("0.0.0.0"));
+        assertEquals(1, IpUtil.ip2maskInt("128.0.0.0"));
+        assertEquals(2, IpUtil.ip2maskInt("192.0.0.0"));
+        assertEquals(3, IpUtil.ip2maskInt("224.0.0.0"));
+        assertEquals(4, IpUtil.ip2maskInt("240.0.0.0"));
+        assertEquals(5, IpUtil.ip2maskInt("248.0.0.0"));
+        assertEquals(6, IpUtil.ip2maskInt("252.0.0.0"));
+        assertEquals(7, IpUtil.ip2maskInt("254.0.0.0"));
+        assertEquals(8, IpUtil.ip2maskInt("255.0.0.0"));
+        assertEquals(9, IpUtil.ip2maskInt("255.128.0.0"));
+        assertEquals(10, IpUtil.ip2maskInt("255.192.0.0"));
+        assertEquals(11, IpUtil.ip2maskInt("255.224.0.0"));
+        assertEquals(12, IpUtil.ip2maskInt("255.240.0.0"));
+        assertEquals(13, IpUtil.ip2maskInt("255.248.0.0"));
+        assertEquals(14, IpUtil.ip2maskInt("255.252.0.0"));
+        assertEquals(15, IpUtil.ip2maskInt("255.254.0.0"));
+        assertEquals(16, IpUtil.ip2maskInt("255.255.0.0"));
+        assertEquals(17, IpUtil.ip2maskInt("255.255.128.0"));
+        assertEquals(18, IpUtil.ip2maskInt("255.255.192.0"));
+        assertEquals(19, IpUtil.ip2maskInt("255.255.224.0"));
+        assertEquals(20, IpUtil.ip2maskInt("255.255.240.0"));
+        assertEquals(21, IpUtil.ip2maskInt("255.255.248.0"));
+        assertEquals(22, IpUtil.ip2maskInt("255.255.252.0"));
+        assertEquals(23, IpUtil.ip2maskInt("255.255.254.0"));
+        assertEquals(24, IpUtil.ip2maskInt("255.255.255.0"));
+        assertEquals(25, IpUtil.ip2maskInt("255.255.255.128"));
+        assertEquals(26, IpUtil.ip2maskInt("255.255.255.192"));
+        assertEquals(27, IpUtil.ip2maskInt("255.255.255.224"));
+        assertEquals(28, IpUtil.ip2maskInt("255.255.255.240"));
+        assertEquals(29, IpUtil.ip2maskInt("255.255.255.248"));
+        assertEquals(30, IpUtil.ip2maskInt("255.255.255.252"));
+        assertEquals(31, IpUtil.ip2maskInt("255.255.255.254"));
+        assertEquals(32, IpUtil.ip2maskInt("255.255.255.255"));
+
+
+        assertEquals(-1, IpUtil.ip2maskInt("192.168.0.0"));
+        assertEquals(-1, IpUtil.ip2maskInt("192.168.0.1"));
+        assertEquals(-1, IpUtil.ip2maskInt("192.168.0.2"));
+        assertEquals(-1, IpUtil.ip2maskInt("127.0.0.0"));
+        assertEquals(-1, IpUtil.ip2maskInt("127.0.0.1"));
+        assertEquals(-1, IpUtil.ip2maskInt("127.0.0.2"));
+
+
+        assertEquals(0, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_00000001L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_00000010L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_00000100L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_00001000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_00010000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_00100000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_01000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000000_10000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000001_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000010_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00000100_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00001000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00010000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_00100000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_01000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000000_10000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000001_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000010_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00000100_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00001000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00010000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_00100000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_01000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000000_10000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000001_00000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000010_00000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00000100_00000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00001000_00000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00010000_00000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b00100000_00000000_00000000_00000000L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b01000000_00000000_00000000_00000000L)));
+        assertEquals(1, IpUtil.ip2maskInt(IpUtil.long2ip(0b10000000_00000000_00000000_00000000L)));
+
+
+        assertEquals(32, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_11111111L)));
+        assertEquals(31, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_11111110L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_11111101L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_11111011L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_11110111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_11101111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_11011111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_10111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111111_01111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111110_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111101_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11111011_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11110111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11101111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_11011111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_10111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111111_01111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111110_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111101_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11111011_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11110111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11101111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_11011111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_10111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111111_01111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111110_11111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111101_11111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11111011_11111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11110111_11111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11101111_11111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b11011111_11111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b10111111_11111111_11111111_11111111L)));
+        assertEquals(-1, IpUtil.ip2maskInt(IpUtil.long2ip(0b01111111_11111111_11111111_11111111L)));
+    }
 }

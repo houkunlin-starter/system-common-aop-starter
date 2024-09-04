@@ -236,7 +236,55 @@ public class IpUtil {
         if (subnetMask < 0 || subnetMask >= 32) {
             return 0xFFFFFFFFL;
         }
+        // 计算这个掩码位的IP长整型值
+        // 先计算这个掩码长度的值
         long v = (1L << subnetMask) - 1;
+        // 然后再左移剩余的0位数，补齐32bit长度
         return v << (32 - subnetMask);
+    }
+
+    /**
+     * IP掩码转掩码位数
+     *
+     * @param ip IP掩码
+     * @return 掩码位数
+     */
+    public static int ip2maskInt(String ip) {
+        long ipLong = ip2long(ip);
+        if (ipLong < 0) {
+            return -1;
+        }
+        return ip2maskInt(ipLong);
+    }
+
+    /**
+     * IP掩码转掩码位数
+     *
+     * @param ipLong IP掩码的长整型值
+     * @return 掩码位数
+     */
+    public static int ip2maskInt(Long ipLong) {
+        // 把原始IP向右移动，直到遇到第1个为1bit的值（去除右边0位）
+        // 计算右侧的0位数
+        int shiftRf = 0;
+        while ((ipLong & 1L) == 0) {
+            if (shiftRf >= 32) {
+                break;
+            }
+            ipLong = ipLong >> 1;
+            shiftRf += 1;
+        }
+        if (shiftRf >= 32) {
+            return 0;
+        }
+        // 预计的掩码位数
+        int maskInt = 32 - shiftRf;
+        // 计算这个掩码位的长整型值
+        long v = (1L << maskInt) - 1;
+        // 对比掩码位的长整型值和原始IP计算的值，两值相等则表示掩码位正确，两值不相等则不是掩码位
+        if (ipLong == v) {
+            return maskInt;
+        }
+        return -1;
     }
 }
