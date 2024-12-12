@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.1'
-    id 'io.spring.dependency-management' version '1.1.5'
+    id 'org.springframework.boot' version '3.3.6'
+    id 'io.spring.dependency-management' version '1.1.6'
     id "io.freefair.lombok" version "8.6"
     id 'maven-publish'
     id 'signing'
@@ -44,8 +44,10 @@ dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     // easyexcel 不在新增特性了，进入了维护模式，只修复bug
     // compileOnly 'com.alibaba:easyexcel:4.0.3'
-    // 因此替换成 easyexcel 原作者新开的项目
-    compileOnly 'cn.idev.excel:fastexcel:1.0.0'
+    // 因此替换成 easyexcel 原作者新开的项目 https://github.com/CodePhiliaX/fastexcel
+    api 'cn.idev.excel:fastexcel:1.0.0'
+    // 这个也是一个 Excel 处理工具 https://github.com/wangguanquan/eec
+    api 'org.ttzero:eec:0.5.20'
     compileOnly('com.deepoove:poi-tl:1.12.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
@@ -53,10 +55,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    // easyexcel 不在新增特性了，进入了维护模式，只修复bug
-    // compileOnly 'com.alibaba:easyexcel:4.0.3'
-    // 因此替换成 easyexcel 原作者新开的项目
-    testImplementation 'cn.idev.excel:fastexcel:1.0.0'
     testImplementation('com.deepoove:poi-tl:1.12.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
