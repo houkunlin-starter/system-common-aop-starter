@@ -1,14 +1,14 @@
 package com.houkunlin.system.common.aop;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.enums.WriteDirectionEnum;
-import com.alibaba.excel.write.builder.ExcelWriterBuilder;
-import com.alibaba.excel.write.handler.WriteHandler;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.metadata.fill.FillConfig;
-import com.alibaba.excel.write.metadata.fill.FillWrapper;
+import cn.idev.excel.ExcelWriter;
+import cn.idev.excel.FastExcel;
+import cn.idev.excel.converters.Converter;
+import cn.idev.excel.enums.WriteDirectionEnum;
+import cn.idev.excel.write.builder.ExcelWriterBuilder;
+import cn.idev.excel.write.handler.WriteHandler;
+import cn.idev.excel.write.metadata.WriteSheet;
+import cn.idev.excel.write.metadata.fill.FillConfig;
+import cn.idev.excel.write.metadata.fill.FillWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,9 +83,9 @@ public class DownloadExcelAspect {
         try (ExcelWriter excelWriter = excelWriterBuilder.build()) {
             WriteSheet writeSheet;
             if (!annotation.sheetName().isBlank()) {
-                writeSheet = EasyExcel.writerSheet(annotation.sheetName()).build();
+                writeSheet = FastExcel.writerSheet(annotation.sheetName()).build();
             } else {
-                writeSheet = EasyExcel.writerSheet("Sheet1").build();
+                writeSheet = FastExcel.writerSheet("Sheet1").build();
             }
 
             if (isNotTemplate) {
@@ -113,9 +113,9 @@ public class DownloadExcelAspect {
         try (ExcelWriter excelWriter = excelWriterBuilder.build()) {
             WriteSheet writeSheet;
             if (!annotation.sheetName().isBlank()) {
-                writeSheet = EasyExcel.writerSheet(annotation.sheetName()).build();
+                writeSheet = FastExcel.writerSheet(annotation.sheetName()).build();
             } else {
-                writeSheet = EasyExcel.writerSheet("Sheet1").build();
+                writeSheet = FastExcel.writerSheet("Sheet1").build();
             }
 
             map.forEach((k, v) -> {
@@ -192,7 +192,7 @@ public class DownloadExcelAspect {
             dataClass = null;
         }
 
-        ExcelWriterBuilder writerBuilder = EasyExcel.write(outputStream, dataClass)
+        ExcelWriterBuilder writerBuilder = FastExcel.write(outputStream, dataClass)
                 .excelType(annotation.excelType())
                 .inMemory(annotation.inMemory())
                 .charset(Charset.forName(annotation.charset()))

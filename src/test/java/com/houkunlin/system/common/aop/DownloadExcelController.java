@@ -1,6 +1,6 @@
 package com.houkunlin.system.common.aop;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
+import cn.idev.excel.support.ExcelTypeEnum;
 import com.houkunlin.system.common.aop.bean.ExcelDownloadBean;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.houkunlin.system.common.aop;
 
-import com.alibaba.excel.EasyExcel;
+import cn.idev.excel.FastExcel;
 import com.deepoove.poi.XWPFTemplate;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class SystemCommonAopPOIAutoConfiguration {
         };
     }
 
-    @ConditionalOnClass(EasyExcel.class)
+    @ConditionalOnClass(FastExcel.class)
     @Configuration(proxyBeanMethods = false)
     public static class POIExcelAutoConfiguration {
         @Bean

@@ -42,7 +42,10 @@ dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-validation'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
-    compileOnly 'com.alibaba:easyexcel:4.0.1'
+    // easyexcel 不在新增特性了，进入了维护模式，只修复bug
+    // compileOnly 'com.alibaba:easyexcel:4.0.3'
+    // 因此替换成 easyexcel 原作者新开的项目
+    compileOnly 'cn.idev.excel:fastexcel:1.0.0'
     compileOnly('com.deepoove:poi-tl:1.12.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
@@ -50,7 +53,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    testImplementation 'com.alibaba:easyexcel:4.0.1'
+    // easyexcel 不在新增特性了，进入了维护模式，只修复bug
+    // compileOnly 'com.alibaba:easyexcel:4.0.3'
+    // 因此替换成 easyexcel 原作者新开的项目
+    testImplementation 'cn.idev.excel:fastexcel:1.0.0'
     testImplementation('com.deepoove:poi-tl:1.12.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
