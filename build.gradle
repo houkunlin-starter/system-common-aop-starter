@@ -1,8 +1,8 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.3.6'
-    id 'io.spring.dependency-management' version '1.1.6'
-    id "io.freefair.lombok" version "8.6"
+    id 'org.springframework.boot' version '3.4.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id "io.freefair.lombok" version '8.13.1'
+    id 'org.jreleaser' version '1.18.0'
     id 'maven-publish'
     id 'signing'
     id 'java-library'
@@ -31,10 +31,13 @@ configurations {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
-    // Spring 里程碑仓库
-    maven { url 'https://repo.spring.io/artifactory/libs-milestone/' }
+    maven {
+        url = "https://repo.spring.io/artifactory/libs-milestone-local/"
+    }
+    maven {
+        url = "https://repo.spring.io/artifactory/libs-release-local/"
+    }
 }
 
 dependencies {
@@ -76,6 +79,24 @@ dependencyManagement {
     }
 }
 
+// 获取环境变量信息
+def GETENV(name) {
+    return findProperty(name) ?: System.getenv(name)
+}
+
+// 获取 GPG KEY 信息，并尝试判断是否需要使用 Base64 进行解码数据
+def GETGPGKEY(name) {
+    String value = GETENV(name)
+    if (value == null) {
+        return null
+    }
+    // value.startsWith("-----BEGIN PGP")
+    if (value.startsWith("LS0tLS1CRUdJTiBQR1Ag")) {
+        return new String(java.util.Base64.getDecoder().decode(value))
+    }
+    return value
+}
+
 publishing {
     publications {
         library(MavenPublication) {
@@ -109,22 +130,25 @@ publishing {
     }
     repositories {
         maven {
-            name = "sonatype"
-            credentials {
-                username = findProperty("ossrhUsername") ?: System.getenv("ossrhUsername")
-                password = findProperty("ossrhPassword") ?: System.getenv("ossrhPassword")
-            }
-            // 正式环境
-            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
-            // 非正式环境库
-            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-            url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+            name = 'buildDir'
+            // 发布到本地路径，在发布到正式仓库时会用到这个步骤的输出内容
+            url = layout.buildDirectory.dir('staging-deploy')
         }
         maven {
-            name = "buildDir"
-            String releasesRepoUrl = "$buildDir/repos/releases"
-            String snapshotsRepoUrl = "$buildDir/repos/snapshots"
-            url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+            // 发布快照版本
+            // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
+            name = 'snapshots'
+            if (isSnapshot) {
+                // 确定版本号是快照版本号
+                credentials {
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                }
+                url = 'https://central.sonatype.com/repository/maven-snapshots/'
+            } else {
+                // 不是快照版本，继续发布到本地路径
+                url = layout.buildDirectory.dir('staging-deploy-snapshots')
+            }
         }
     }
 }
@@ -132,13 +156,52 @@ publishing {
 signing {
     // 使用 gradle.properties 设置参数，或者在命令行中增加 -Pgpg_private_key= -Pgpg_password= 设置参数
     // 或者在环境变量中设置相应的环境变量
-    String signingKey = findProperty("gpg_private_key") ?: System.getenv("gpg_private_key")
+    String signingKey = GETGPGKEY("gpg_private_key")
     if (signingKey != null) {
-        String signingPassword = findProperty("gpg_password") ?: System.getenv("gpg_password")
+        String signingPassword = GETENV("gpg_password")
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
     sign publishing.publications
-    // sign configurations.archives
+}
+
+jreleaser {
+    signing {
+        active = 'ALWAYS'
+        armored = true
+        mode = 'MEMORY'
+        publicKey = GETGPGKEY("gpg_public_key")
+        secretKey = GETGPGKEY("gpg_private_key")
+        passphrase = GETENV("gpg_password")
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                releaseDeployToCentral {
+                    active = 'ALWAYS'
+                    snapshotSupported = true
+                    applyMavenCentralRules = true
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    stagingRepository('build/staging-deploy')
+                }
+            }
+        }
+    }
+    release {
+        github {
+            name = "system-dict-starter"
+            repoOwner = "houkunlin-starter"
+            skipTag = true
+            overwrite = true
+            username = "houkunlin"
+            token = GETENV("GITHUB_TOKEN")
+            commitAuthor {
+                name = "houkunlin"
+                email = "houkunlin@aliyun.com"
+            }
+        }
+    }
 }
 
 bootJar {
@@ -187,9 +250,6 @@ javadoc {
     enabled = true
     options.encoding = "UTF-8"
     options.addStringOption('Xdoclint:none', '-quiet')
-    if (JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
 }
 
 compileJava {

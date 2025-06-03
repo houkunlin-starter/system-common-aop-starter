@@ -14,27 +14,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v1
         with:
-          java-version: 17
+          java-version: 21
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Release Jar To Maven
         env: # Or as an environment variable
+          gpg_public_key: ${{ secrets.GPG_PUBLIC_KEY }}
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg_password: ${{ secrets.GPG_PASSWORD }}
-          ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
-          ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
-        # build.gradle 脚本中已支持直接从环境变量中读取相关配置信息，因此这里可以不显式传递相关机密参数
-        run: ./gradlew publish
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
+          sonatype_username: ${{ secrets.SONATYPE_USERNAME }}
+          sonatype_password: ${{ secrets.SONATYPE_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          JRELEASER_MAVENCENTRAL_STAGE: UPLOAD
+        # build.gradle 脚本中已支持直接从环境变量中读取相关配置信息，因此这里可以不显式传递相关机密参数
+        run: ./gradlew publishAllPublicationsToBuildDirRepository jreleaserRelease
