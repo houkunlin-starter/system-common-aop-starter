@@ -182,26 +182,11 @@ jreleaser {
                     stagingRepository('build/staging-deploy')
                     verifyUrl = "https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/{{path}}/{{filename}}"
                 }
-                nas {
-                    active = 'ALWAYS'
-                    def repoBaseUrl = "http://192.168.0.5:8900"
-                    def theProdUrl = "$repoBaseUrl/releases"
-                    def theSnapshotUrl = "$repoBaseUrl/snapshots"
-                    url = theProdUrl
-                    snapshotUrl = theSnapshotUrl
-                    snapshotSupported = true
-                    username = GETENV("sonatype_username")
-                    password = GETENV("sonatype_password")
-                    authorization = 'BASIC'
-                    stagingRepository('target/staging-deploy')
-                    verifyUrl = (isSnapshot ? theSnapshotUrl : theProdUrl) + "/{{path}}/{{filename}}"
-                }
             }
         }
     }
     release {
         github {
-            name = "system-dict-starter"
             repoOwner = "houkunlin-starter"
             skipTag = true
             overwrite = true
