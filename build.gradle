@@ -41,30 +41,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'cn.hutool:hutool-extra:5.8.36'
-    // 模板引擎
-    testImplementation 'org.freemarker:freemarker:2.3.33'
-    testImplementation 'com.ibeetl:beetl:3.16.2.RELEASE'
-    testImplementation 'com.jfinal:enjoy:5.1.3'
-    testImplementation 'org.rythmengine:rythm-engine:1.4.2'
-    testImplementation 'org.apache.velocity:velocity-engine-core:2.3'
-    testImplementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
-    testImplementation 'com.github.subchen:jetbrick-template:2.1.10'
-    testImplementation 'org.febit.wit:wit-core:2.7.0-beta'
-    testImplementation 'org.febit.wit:wit-tools:2.7.0-beta'
-    // 表达式引擎
-    testImplementation 'com.googlecode.aviator:aviator:5.4.3'
-    testImplementation('org.apache.commons:commons-jexl3:3.4.0') {
-        exclude group: 'commons-logging', module: 'commons-logging'
-    }
-    testImplementation 'org.mvel:mvel2:2.5.2.Final'
-    testImplementation 'com.jfirer:jfireEl:1.0'
-    testImplementation 'org.mozilla:rhino-engine:1.7.15'
-    testImplementation('com.alibaba:QLExpress:3.3.3') {
-        exclude group: 'commons-logging', module: 'commons-logging'
-    }
-
-
     compileOnly 'org.springframework.boot:spring-boot-starter-aop'
     compileOnly 'org.springframework.boot:spring-boot-starter-validation'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
@@ -205,6 +181,20 @@ jreleaser {
                     password = GETENV("sonatype_password")
                     stagingRepository('build/staging-deploy')
                     verifyUrl = "https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/{{path}}/{{filename}}"
+                }
+                nas {
+                    active = 'ALWAYS'
+                    def repoBaseUrl = "http://192.168.0.5:8900"
+                    def theProdUrl = "$repoBaseUrl/releases"
+                    def theSnapshotUrl = "$repoBaseUrl/snapshots"
+                    url = theProdUrl
+                    snapshotUrl = theSnapshotUrl
+                    snapshotSupported = true
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                    authorization = 'BASIC'
+                    stagingRepository('target/staging-deploy')
+                    verifyUrl = (isSnapshot ? theSnapshotUrl : theProdUrl) + "/{{path}}/{{filename}}"
                 }
             }
         }
