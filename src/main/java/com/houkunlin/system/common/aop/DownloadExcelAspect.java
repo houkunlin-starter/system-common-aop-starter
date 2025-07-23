@@ -50,15 +50,29 @@ public class DownloadExcelAspect {
         try {
             Object object = pjp.proceed();
             if (object instanceof Collection<?> collection) {
-                String filename = getFilename(pjp, annotation, object);
+                String filename = getFilename(pjp, annotation.filename(), object);
                 ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), annotation.contentType(), false);
                 renderExcel(response.getOutputStream(), pjp, annotation, collection);
                 return null;
             } else if (object instanceof Map<?, ?> map) {
-                String filename = getFilename(pjp, annotation, object);
+                String filename = getFilename(pjp, annotation.filename(), object);
                 ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), annotation.contentType(), false);
                 renderExcel(response.getOutputStream(), pjp, annotation, map);
                 return null;
+            } else if (object instanceof ExcelData excelData) {
+                String filename = excelData.filename();
+                Object data = excelData.data();
+                if (data instanceof Collection<?> collection) {
+                    String _filename = getFilename(pjp, filename, data);
+                    ResponseUtil.writeDownloadHeaders(response, _filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                    renderExcel(response.getOutputStream(), pjp, annotation, collection);
+                    return null;
+                } else if (data instanceof Map<?, ?> map) {
+                    String _filename = getFilename(pjp, filename, data);
+                    ResponseUtil.writeDownloadHeaders(response, _filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                    renderExcel(response.getOutputStream(), pjp, annotation, map);
+                    return null;
+                }
             }
             return object;
         } catch (Throwable e) {
@@ -164,13 +178,12 @@ public class DownloadExcelAspect {
      * 获取下载文件名（文件名可能是模板字符串）
      *
      * @param pjp        切点对象
-     * @param annotation 注解对象
+     * @param filename   文件名
      * @param data       返回值的数据
      * @return 文件名（经过模板处理后的字符串）
      */
     @SuppressWarnings({"unchecked"})
-    private String getFilename(ProceedingJoinPoint pjp, DownloadExcel annotation, Object data) {
-        String filename = annotation.filename();
+    private String getFilename(ProceedingJoinPoint pjp, String filename, Object data) {
         if (templateParser.isTemplate(filename)) {
             Object context = templateParser.createContext(pjp, data, null);
             filename = templateParser.parseTemplate(filename, context);

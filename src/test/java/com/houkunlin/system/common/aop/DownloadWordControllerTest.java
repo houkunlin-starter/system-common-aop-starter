@@ -79,6 +79,27 @@ class DownloadWordControllerTest {
         assertTrue(string.contains("地址：北京市朝阳区"));
     }
 
+    @Test
+    void m13() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadWord/m13"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息 - 张三 18 岁.docx", StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(CONTENT_TYPE))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        String string = getDocxString(contentAsByteArray);
+
+        assertTrue(string.contains("姓名：张三"));
+        assertTrue(string.contains("年龄：18"));
+        assertTrue(string.contains("地址：北京市朝阳区"));
+    }
+
     private String getDocxString(byte[] bytes) throws IOException {
         StringBuilder stringBuffer = new StringBuilder();
         XWPFDocument xwpfDocument = new XWPFDocument(new ByteArrayInputStream(bytes));

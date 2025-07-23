@@ -27,4 +27,10 @@ public class DownloadWordController {
     public ExcelDownloadBean m12() {
         return bean;
     }
+
+    @DownloadWord(filename = "用户信息 - #{result.name} #{result.age} 岁", withTemplate = "classpath:template.docx")
+    @GetMapping("/m13")
+    public WordData m13() {
+        return new WordData("用户信息 - %s %s 岁".formatted(bean.getName(), bean.getAge()), bean);
+    }
 }

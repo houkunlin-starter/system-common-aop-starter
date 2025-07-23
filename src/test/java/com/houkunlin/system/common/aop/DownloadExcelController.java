@@ -100,6 +100,12 @@ public class DownloadExcelController {
         return data;
     }
 
+    @DownloadExcel(filename = "用户信息 - #{result.size} 条数据", dataClass = ExcelDownloadBean.class)
+    @GetMapping("/m221")
+    public ExcelData m221() {
+        return new ExcelData("用户信息 - %s 条数据".formatted(data.size()), data);
+    }
+
     @DownloadExcelWriteHandler(DownloadExcelCustomWriteHandler.class)
     @DownloadExcel(filename = "用户信息", useDefaultStyle = false, dataClass = ExcelDownloadBean.class)
     @GetMapping("/m23")
@@ -123,5 +129,11 @@ public class DownloadExcelController {
     @GetMapping("/m26")
     public Map<String, Object> m26() {
         return Map.of("data", data, "data" + DownloadExcel.HORIZONTAL_SUFFIX, "true");
+    }
+
+    @DownloadExcel(filename = "", withTemplate = "classpath:template-map-horizontal.xlsx")
+    @GetMapping("/m27")
+    public ExcelData m27() {
+        return new ExcelData("用户信息", Map.of("data", data, "data" + DownloadExcel.HORIZONTAL_SUFFIX, "true"));
     }
 }

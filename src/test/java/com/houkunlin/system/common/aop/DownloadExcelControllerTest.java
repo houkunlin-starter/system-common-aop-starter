@@ -522,6 +522,45 @@ class DownloadExcelControllerTest {
     }
 
     @Test
+    void m221() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m221"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息 - " + data.size() + " 条数据" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(CONTENT_TYPE))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        List<ExcelDownloadBean> objectList = FastExcel.read(new ByteArrayInputStream(contentAsByteArray), ExcelDownloadBean.class, new PageReadListener<ExcelDownloadBean>(objects -> {
+                    assertEquals(data.size(), objects.size());
+                    for (int i = 0; i < objects.size(); i++) {
+                        assertEquals(data.get(i).getName(), objects.get(i).getName());
+                        assertEquals(data.get(i).getAge(), objects.get(i).getAge());
+                        assertEquals(data.get(i).getAddress(), objects.get(i).getAddress());
+                        assertEquals(data.get(i).getTime(), objects.get(i).getTime());
+                    }
+                }, 100))
+                .headRowNumber(1)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
+                .doReadSync();
+        assertEquals(data.size(), objectList.size());
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), objectList.get(i).getName());
+            assertEquals(data.get(i).getAge(), objectList.get(i).getAge());
+            assertEquals(data.get(i).getAddress(), objectList.get(i).getAddress());
+            assertEquals(data.get(i).getTime(), objectList.get(i).getTime());
+        }
+    }
+
+    @Test
     void m23() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
         MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m23"))
@@ -657,6 +696,49 @@ class DownloadExcelControllerTest {
     void m26() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
         MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m26"))
+                .andDo(log())
+                .andExpect(status().isOk())
+                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("expires", expires))
+                .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
+                        .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
+                        .build().toString()))
+                .andExpect(content().contentType(CONTENT_TYPE))
+                .andReturn();
+        byte[] contentAsByteArray = mvcResult.getResponse().getContentAsByteArray();
+
+        List<Map<Object, Object>> objectList = FastExcel.read(new ByteArrayInputStream(contentAsByteArray))
+                .headRowNumber(0)
+                .excelType(excelType)
+                .charset(StandardCharsets.UTF_8)
+                .use1904windowing(false)
+                .sheet("Sheet1")
+                .doReadSync();
+
+        assertEquals(4, objectList.size());
+
+        Map<Object, Object> row0 = objectList.get(0);
+        Map<Object, Object> row1 = objectList.get(1);
+        Map<Object, Object> row2 = objectList.get(2);
+        Map<Object, Object> row3 = objectList.get(3);
+
+        assertEquals("姓名", row0.get(0));
+        assertEquals("年龄", row1.get(0));
+        assertEquals("地址", row2.get(0));
+        assertEquals("注册日期", row3.get(0));
+
+        for (int i = 0; i < objectList.size(); i++) {
+            assertEquals(data.get(i).getName(), row0.get(i + 1));
+            assertEquals(String.valueOf(data.get(i).getAge()), row1.get(i + 1));
+            assertEquals(data.get(i).getAddress(), row2.get(i + 1));
+            assertEquals(DATE_TIME_FORMATTER.format(data.get(i).getTime()), row3.get(i + 1));
+        }
+    }
+
+    @Test
+    void m27() throws Exception {
+        ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m27"))
                 .andDo(log())
                 .andExpect(status().isOk())
                 .andExpect(header().string("pragma", "no-cache"))

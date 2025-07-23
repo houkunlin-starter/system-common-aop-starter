@@ -50,7 +50,7 @@ dependencies {
     // 因此替换成 easyexcel 原作者新开的项目 https://github.com/CodePhiliaX/fastexcel
     api 'cn.idev.excel:fastexcel:1.2.0'
     // 这个也是一个 Excel 处理工具 https://github.com/wangguanquan/eec
-    api 'org.ttzero:eec:0.5.24'
+    // api 'org.ttzero:eec:0.5.24' // 与 poi 冲突了
     compileOnly('com.deepoove:poi-tl:1.12.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }

@@ -32,7 +32,11 @@ public class DownloadWordAspect {
         try {
             Object object = pjp.proceed();
             try {
-                renderWord(pjp, annotation, object);
+                if (object instanceof WordData wordData) {
+                    renderWord(pjp, annotation, wordData.filename(), wordData.data());
+                } else {
+                    renderWord(pjp, annotation, annotation.filename(), object);
+                }
             } catch (IOException e) {
                 log.error("下载 Word 文件失败，写 Word 文件流失败", e);
                 return object;
@@ -45,7 +49,7 @@ public class DownloadWordAspect {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void renderWord(ProceedingJoinPoint pjp, DownloadWord annotation, Object data) throws IOException {
+    private void renderWord(ProceedingJoinPoint pjp, DownloadWord annotation, String filename, Object data) throws IOException {
         String withTemplate = annotation.withTemplate();
         if (withTemplate.isBlank()) {
             throw new IOException("请正确配置模板文件");
@@ -59,8 +63,6 @@ public class DownloadWordAspect {
         }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         XWPFTemplate.compile(templateInputStream).render(data).writeAndClose(byteArrayOutputStream);
-
-        String filename = annotation.filename();
 
         if (templateParser.isTemplate(filename)) {
             Object context = templateParser.createContext(pjp, data, null);
