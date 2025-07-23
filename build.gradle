@@ -48,9 +48,9 @@ dependencies {
     // easyexcel 不在新增特性了，进入了维护模式，只修复bug
     // compileOnly 'com.alibaba:easyexcel:4.0.3'
     // 因此替换成 easyexcel 原作者新开的项目 https://github.com/CodePhiliaX/fastexcel
-    api 'cn.idev.excel:fastexcel:1.0.0'
+    api 'cn.idev.excel:fastexcel:1.2.0'
     // 这个也是一个 Excel 处理工具 https://github.com/wangguanquan/eec
-    api 'org.ttzero:eec:0.5.20'
+    api 'org.ttzero:eec:0.5.24'
     compileOnly('com.deepoove:poi-tl:1.12.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
@@ -61,14 +61,14 @@ dependencies {
     testImplementation('com.deepoove:poi-tl:1.12.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    testImplementation('com.github.fppt:jedis-mock:1.1.2') {
+    testImplementation('com.github.fppt:jedis-mock:1.1.11') {
         exclude group: 'org.json', module: 'json'
     }
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    testImplementation 'org.testng:testng:7.10.2'
+    testImplementation 'org.testng:testng:7.11.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
