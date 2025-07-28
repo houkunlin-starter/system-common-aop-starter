@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.0.12'
+version = '1.0.13-SNAPSHOT'
 description = """
 常用的 AOP 注解功能。
 Commonly used AOP annotation features.
@@ -182,10 +182,24 @@ jreleaser {
                     stagingRepository('build/staging-deploy')
                     verifyUrl = "https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/{{path}}/{{filename}}"
                 }
+                nas {
+                    active = 'ALWAYS'
+                    def repoBaseUrl = "http://192.168.0.5:8900"
+                    def theProdUrl = "$repoBaseUrl/releases"
+                    def theSnapshotUrl = "$repoBaseUrl/snapshots"
+                    url = theProdUrl
+                    snapshotUrl = theSnapshotUrl
+                    snapshotSupported = true
+                    username = GETENV("reposiliteUsername")
+                    password = GETENV("reposilitePassword")
+                    stagingRepository('build/staging-deploy')
+                    verifyUrl = (isSnapshot ? theSnapshotUrl : theProdUrl) + "/{{path}}/{{filename}}"
+                }
             }
         }
     }
     release {
+        gitRootSearch = false
         github {
             repoOwner = "houkunlin-starter"
             skipTag = true
