@@ -54,12 +54,12 @@ public class FastExcelView extends AbstractView {
     public static final String IS_WITH_TEMPLATE = "__FAST_WITH_TEMPLATE";
     /**
      * 导出 Excel 格式类型
-     */
-    protected ExcelTypeEnum excelType = ExcelTypeEnum.XLS;
-    /**
-     * 文件名
      *
      * @see ExcelTypeEnum
+     */
+    protected ExcelTypeEnum excelType;
+    /**
+     * 文件名
      */
     protected String filename;
     /**
@@ -146,39 +146,34 @@ public class FastExcelView extends AbstractView {
     protected Class<?> dataClass;
 
     public FastExcelView() {
-        this(ExcelTypeEnum.XLSX);
+        setExcelType(ExcelTypeEnum.XLSX);
     }
 
     public FastExcelView(ExcelTypeEnum excelType) {
-        switch (excelType) {
-            case XLSX -> setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            case XLS -> setContentType("application/vnd.ms-excel");
-            case CSV -> setContentType("text/csv");
-        }
         setExcelType(excelType);
     }
 
     public FastExcelView(String filename, Object data) {
-        this(ExcelTypeEnum.XLSX);
+        setExcelType(ExcelTypeEnum.XLSX);
         this.filename = filename;
         this.data = data;
     }
 
     public FastExcelView(String filename, Object data, Class<?> dataClass) {
-        this(ExcelTypeEnum.XLSX);
+        setExcelType(ExcelTypeEnum.XLSX);
         this.filename = filename;
         this.data = data;
         this.dataClass = dataClass;
     }
 
     public FastExcelView(String filename, Object data, ExcelTypeEnum excelType) {
-        this(excelType);
+        setExcelType(excelType);
         this.filename = filename;
         this.data = data;
     }
 
     public FastExcelView(String filename, Object data, Class<?> dataClass, ExcelTypeEnum excelType) {
-        this(excelType);
+        setExcelType(excelType);
         this.filename = filename;
         this.data = data;
         this.dataClass = dataClass;
@@ -348,6 +343,15 @@ public class FastExcelView extends AbstractView {
             }
         }
         return null;
+    }
+
+    public void setExcelType(ExcelTypeEnum excelType) {
+        this.excelType = excelType;
+        switch (excelType) {
+            case XLSX -> setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            case XLS -> setContentType("application/vnd.ms-excel");
+            case CSV -> setContentType("text/csv");
+        }
     }
 
     public ExcelTypeEnum getExcelType(Map<String, Object> model, HttpServletRequest request) {

@@ -2,6 +2,7 @@ package com.houkunlin.system.common.aop;
 
 import cn.idev.excel.FastExcel;
 import com.deepoove.poi.XWPFTemplate;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.POIDocument;
@@ -54,10 +55,11 @@ public class SystemCommonAopPOIAutoConfiguration {
         public DownloadExcelAspect downloadExcelAspect(
                 TemplateParser templateParser,
                 DownloadPoiHandler downloadPoiHandler,
+                HttpServletRequest request,
                 HttpServletResponse response,
                 ApplicationContext applicationContext
         ) {
-            return new DownloadExcelAspect(templateParser, downloadPoiHandler, response, applicationContext);
+            return new DownloadExcelAspect(templateParser, downloadPoiHandler, request, response, applicationContext);
         }
     }
 
