@@ -34,13 +34,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class DownloadExcelControllerTest {
-
+class DownloadExcelViewControllerTest {
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static final ZoneId GMT = ZoneId.of("GMT");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
     private static final String expires = DATE_FORMATTER.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), GMT));
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    public static final String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -50,10 +49,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m11() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m11"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m11"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -95,10 +94,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m12() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m12"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m12"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -134,10 +133,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m13() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLS;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m13"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m13"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -173,10 +172,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m14() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.CSV;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m14"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m14"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -212,10 +211,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m15() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m15"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m15"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -251,10 +250,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m16() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m16"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m16"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -290,10 +289,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m17() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m17"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m17"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -329,10 +328,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m18() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m18"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m18"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -368,10 +367,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m19() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m19"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m19"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -407,10 +406,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m20() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLS;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m20"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m20"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -447,10 +446,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m21() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m21"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m21"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息 - " + testBean.now() + excelType.getValue(), StandardCharsets.UTF_8)
@@ -486,10 +485,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m22() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m22"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m22"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息 - " + data.size() + " 条数据" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -525,7 +524,7 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m221() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m221"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m221"))
                 .andDo(log())
                 .andExpect(status().isOk())
                 .andExpect(header().string("pragma", "no-cache"))
@@ -564,10 +563,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m23() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m23"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m23"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -609,10 +608,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m24() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m24"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m24"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -653,10 +652,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m25() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m25"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m25"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -696,10 +695,10 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m26() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m26"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m26"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息" + excelType.getValue(), StandardCharsets.UTF_8)
@@ -739,7 +738,7 @@ class DownloadExcelControllerTest {
     @RepeatedTest(50)
     void m27() throws Exception {
         ExcelTypeEnum excelType = ExcelTypeEnum.XLSX;
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcel/m27"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadExcelView/m27"))
                 .andDo(log())
                 .andExpect(status().isOk())
                 .andExpect(header().string("pragma", "no-cache"))

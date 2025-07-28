@@ -122,7 +122,7 @@ class ResponseUtil {
         response.setContentType(contentType);
         response.setHeader("Cache-Control", NO_CACHE);
         response.setHeader("Pragma", "no-cache");
-        response.setHeader("Expires", EXPIRES);
+        // response.setHeader("Expires", EXPIRES);
         response.setHeader("Content-Disposition", contentDisposition.toString());
         for (int i = 1; i < headers.length; i += 2) {
             response.setHeader(headers[i - 1], headers[i]);

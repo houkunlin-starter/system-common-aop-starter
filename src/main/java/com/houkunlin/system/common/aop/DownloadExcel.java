@@ -12,7 +12,8 @@ import java.lang.annotation.*;
 import java.nio.charset.Charset;
 
 /**
- * Excel 导出下载
+ * Excel 导出下载。
+ * 发现这个注解的性能好像没有 {@link FastExcelView} 的性能好，优先推荐使用 {@link FastExcelView}
  *
  * @author HouKunLin
  */
