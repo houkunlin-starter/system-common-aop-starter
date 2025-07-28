@@ -49,14 +49,20 @@ public class DownloadExcelAspect {
     public Object doAround(ProceedingJoinPoint pjp, DownloadExcel annotation) throws Throwable {
         try {
             Object object = pjp.proceed();
+            String contentType = "";
+            switch (annotation.excelType()) {
+                case CSV -> contentType = "text/csv";
+                case XLSX -> contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                case XLS -> contentType = "application/vnd.ms-excel";
+            }
             if (object instanceof Collection<?> collection) {
                 String filename = getFilename(pjp, annotation.filename(), object);
-                ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), contentType, false);
                 renderExcel(response.getOutputStream(), pjp, annotation, collection);
                 return null;
             } else if (object instanceof Map<?, ?> map) {
                 String filename = getFilename(pjp, annotation.filename(), object);
-                ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                ResponseUtil.writeDownloadHeaders(response, filename + annotation.excelType().getValue(), contentType, false);
                 renderExcel(response.getOutputStream(), pjp, annotation, map);
                 return null;
             } else if (object instanceof ExcelData excelData) {
@@ -64,12 +70,12 @@ public class DownloadExcelAspect {
                 Object data = excelData.data();
                 if (data instanceof Collection<?> collection) {
                     String _filename = getFilename(pjp, filename, data);
-                    ResponseUtil.writeDownloadHeaders(response, _filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                    ResponseUtil.writeDownloadHeaders(response, _filename + annotation.excelType().getValue(), contentType, false);
                     renderExcel(response.getOutputStream(), pjp, annotation, collection);
                     return null;
                 } else if (data instanceof Map<?, ?> map) {
                     String _filename = getFilename(pjp, filename, data);
-                    ResponseUtil.writeDownloadHeaders(response, _filename + annotation.excelType().getValue(), annotation.contentType(), false);
+                    ResponseUtil.writeDownloadHeaders(response, _filename + annotation.excelType().getValue(), contentType, false);
                     renderExcel(response.getOutputStream(), pjp, annotation, map);
                     return null;
                 }

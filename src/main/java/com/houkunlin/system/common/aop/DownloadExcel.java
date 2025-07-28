@@ -49,11 +49,6 @@ public @interface DownloadExcel {
     String filename();
 
     /**
-     * 下载文件的文件内容类型
-     */
-    String contentType() default "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-    /**
      * 下载的 Excel 类型
      *
      * @see ExcelTypeEnum
