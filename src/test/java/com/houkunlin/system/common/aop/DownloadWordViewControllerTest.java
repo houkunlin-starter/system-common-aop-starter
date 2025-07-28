@@ -27,21 +27,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class DownloadWordControllerTest {
+class DownloadWordViewControllerTest {
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     private static final ZoneId GMT = ZoneId.of("GMT");
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
     private static final String expires = DATE_FORMATTER.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), GMT));
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    public static final String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     @Autowired
     private MockMvc mockMvc;
 
     @RepeatedTest(50)
     void m11() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadWord/m11"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadWordView/m11"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息.docx", StandardCharsets.UTF_8)
@@ -59,10 +59,10 @@ class DownloadWordControllerTest {
 
     @RepeatedTest(50)
     void m12() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadWord/m12"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadWordView/m12"))
                 .andDo(log())
                 .andExpect(status().isOk())
-                .andExpect(header().string("pragma", "no-cache"))
+                .andExpect(header().string("pragma", "private"))
                 // .andExpect(header().string("expires", expires))
                 .andExpect(header().string("Content-Disposition", ContentDisposition.builder("attachment")
                         .filename("用户信息 - 张三 18 岁.docx", StandardCharsets.UTF_8)
@@ -80,7 +80,7 @@ class DownloadWordControllerTest {
 
     @RepeatedTest(50)
     void m13() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/DownloadWord/m13"))
+        MvcResult mvcResult = mockMvc.perform(get("/DownloadWordView/m13"))
                 .andDo(log())
                 .andExpect(status().isOk())
                 .andExpect(header().string("pragma", "no-cache"))
