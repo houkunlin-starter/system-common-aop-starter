@@ -1,2 +1,3 @@
 com.houkunlin.system.common.aop.SystemCommonAopAutoConfiguration
 com.houkunlin.system.common.aop.SystemCommonAopPOIAutoConfiguration
+com.houkunlin.system.common.aop.AllowIPConfigurationProperties
