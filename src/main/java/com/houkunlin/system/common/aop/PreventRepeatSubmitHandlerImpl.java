@@ -9,8 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -67,7 +70,16 @@ public class PreventRepeatSubmitHandlerImpl implements PreventRepeatSubmitHandle
     }
 
     private boolean writeRequestBody(ByteArrayOutputStream baos, HttpServletRequest request) {
-        if (request instanceof RepeatReadRequestWrapper wrapper) {
+        if (request instanceof ContentCachingRequestWrapper wrapper) {
+            try {
+                byte[] bytes = FileCopyUtils.copyToByteArray(wrapper.getInputStream());
+                baos.writeBytes(bytes);
+                return true;
+            } catch (IOException e) {
+                log.error("【防止重复提交】读取请求内容失败", e);
+                return false;
+            }
+        } else if (request instanceof RepeatReadRequestWrapper wrapper) {
             baos.writeBytes(wrapper.getBodyBytes());
             return true;
         } else if (request instanceof HttpServletRequestWrapper wrapper) {

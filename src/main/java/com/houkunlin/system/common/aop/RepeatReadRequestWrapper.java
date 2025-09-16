@@ -1,7 +1,6 @@
 package com.houkunlin.system.common.aop;
 
 import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import lombok.Getter;
@@ -22,10 +21,8 @@ public class RepeatReadRequestWrapper extends HttpServletRequestWrapper {
     private final byte[] bodyBytes;
     private final boolean repeatReader = true;
 
-    public RepeatReadRequestWrapper(HttpServletRequest request, ServletResponse response) throws IOException {
+    public RepeatReadRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
         this.bodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
     }
 

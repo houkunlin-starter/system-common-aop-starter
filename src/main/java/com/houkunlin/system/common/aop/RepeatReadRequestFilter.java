@@ -2,6 +2,7 @@ package com.houkunlin.system.common.aop;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
 
@@ -11,7 +12,7 @@ public class RepeatReadRequestFilter implements Filter {
         ServletRequest requestWrapper = request;
         String contentType = request.getContentType();
         if (contentType != null && request instanceof HttpServletRequest httpServletRequest && isText(contentType)) {
-            requestWrapper = new RepeatReadRequestWrapper(httpServletRequest, response);
+            requestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
         }
         chain.doFilter(requestWrapper, response);
     }
