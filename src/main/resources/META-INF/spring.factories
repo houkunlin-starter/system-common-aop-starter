@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.houkunlin.system.common.aop.SystemCommonAopAutoConfiguration\
   com.houkunlin.system.common.aop.SystemCommonAopPOIAutoConfiguration\
+  com.houkunlin.system.common.aop.SystemCommonAopRedisConfiguration\
   com.houkunlin.system.common.aop.AllowIPConfigurationProperties
