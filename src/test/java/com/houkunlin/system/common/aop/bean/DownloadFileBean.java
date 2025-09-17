@@ -1,8 +1,8 @@
 package com.houkunlin.system.common.aop.bean;
 
-import com.houkunlin.system.common.aop.DownloadFileModel;
-import com.houkunlin.system.common.aop.DownloadFileName;
-import com.houkunlin.system.common.aop.DownloadFileObject;
+import com.houkunlin.system.common.aop.annotation.DownloadFileModel;
+import com.houkunlin.system.common.aop.annotation.DownloadFileName;
+import com.houkunlin.system.common.aop.annotation.DownloadFileObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

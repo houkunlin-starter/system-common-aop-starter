@@ -1,6 +1,8 @@
 package com.houkunlin.system.common.aop;
 
 import com.houkunlin.system.common.aop.bean.DownloadFileBean;
+import com.houkunlin.system.common.aop.file.DownloadFileAspect;
+import com.houkunlin.system.common.aop.file.DownloadFileModelMetadata;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

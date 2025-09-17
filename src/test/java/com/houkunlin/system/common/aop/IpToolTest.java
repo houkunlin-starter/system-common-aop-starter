@@ -1,5 +1,6 @@
 package com.houkunlin.system.common.aop;
 
+import com.houkunlin.system.common.aop.ip.IpUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

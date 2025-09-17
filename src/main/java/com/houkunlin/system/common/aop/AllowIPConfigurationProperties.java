@@ -1,5 +1,7 @@
 package com.houkunlin.system.common.aop;
 
+import com.houkunlin.system.common.aop.annotation.AllowIP;
+import com.houkunlin.system.common.aop.ip.IpUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

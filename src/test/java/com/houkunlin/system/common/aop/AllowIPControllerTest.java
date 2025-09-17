@@ -1,5 +1,6 @@
 package com.houkunlin.system.common.aop;
 
+import com.houkunlin.system.common.aop.ip.AllowIPException;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -83,9 +84,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -119,9 +120,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -155,9 +156,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -191,9 +192,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -227,9 +228,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -263,9 +264,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -301,9 +302,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -328,9 +329,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 未设置访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 未设置访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 未设置访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 未设置访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertFalse(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -387,9 +388,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 不在访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 不在访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertTrue(((AllowIPException) exception.getCause()).isHasAllowIp());
@@ -414,9 +415,9 @@ class AllowIPControllerTest {
                             .andExpect(status().isOk())
                             .andExpect(content().string("true"))
                             .andReturn(),
-                    "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 未设置访问IP白名单中"
+                    "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 未设置访问IP白名单中"
             );
-            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.AllowIPException: 未设置访问IP白名单中");
+            assertEquals(exception.getMessage(), "Request processing failed: com.houkunlin.system.common.aop.ip.AllowIPException: 未设置访问IP白名单中");
             assertInstanceOf(AllowIPException.class, exception.getCause());
             assertEquals(ip, ((AllowIPException) exception.getCause()).getCurrentIp());
             assertFalse(((AllowIPException) exception.getCause()).isHasAllowIp());

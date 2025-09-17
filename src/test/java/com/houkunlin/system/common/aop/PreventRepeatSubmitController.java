@@ -1,5 +1,6 @@
 package com.houkunlin.system.common.aop;
 
+import com.houkunlin.system.common.aop.annotation.PreventRepeatSubmit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

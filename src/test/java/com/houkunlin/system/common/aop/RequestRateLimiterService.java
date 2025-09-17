@@ -1,5 +1,6 @@
 package com.houkunlin.system.common.aop;
 
+import com.houkunlin.system.common.aop.annotation.RequestRateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

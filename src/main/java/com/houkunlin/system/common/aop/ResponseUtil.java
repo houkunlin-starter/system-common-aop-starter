@@ -20,7 +20,7 @@ import java.util.Locale;
  *
  * @author HouKunLin
  */
-class ResponseUtil {
+public class ResponseUtil {
     public static final ZoneId GMT = ZoneId.of("GMT");
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
     public static final String EXPIRES = DATE_FORMATTER.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), GMT));

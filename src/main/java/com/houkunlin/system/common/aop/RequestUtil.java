@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  * @author HouKunLin
  */
-class RequestUtil {
+public class RequestUtil {
     public static final Pattern IP_PATTERN = Pattern.compile("((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}");
     private static final String[] IP_KEYS = new String[]{"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP"};
     private static final String[] DEFAULT_LOCAL_IP6 = new String[]{"0:0:0:0:0:0:0:1", "::1"};
