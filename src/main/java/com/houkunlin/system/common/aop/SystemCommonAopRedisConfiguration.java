@@ -1,5 +1,6 @@
 package com.houkunlin.system.common.aop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.common.aop.limit.RequestRateLimiterAspect;
 import com.houkunlin.system.common.aop.limit.RequestRateLimiterHandler;
 import com.houkunlin.system.common.aop.limit.RequestRateLimiterHandlerImpl;
@@ -24,10 +25,10 @@ import org.springframework.http.HttpHeaders;
 public class SystemCommonAopRedisConfiguration {
 
     @Bean
-    public PreventRepeatSubmitAspect preventRepeatSubmitAspect(StringRedisTemplate stringRedisTemplate, ObjectProvider<PreventRepeatSubmitHandler> preventRepeatSubmitHandlerObjectProvider) {
+    public PreventRepeatSubmitAspect preventRepeatSubmitAspect(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper, ObjectProvider<PreventRepeatSubmitHandler> preventRepeatSubmitHandlerObjectProvider) {
         PreventRepeatSubmitHandler preventRepeatSubmitHandler = preventRepeatSubmitHandlerObjectProvider.getIfAvailable();
         if (preventRepeatSubmitHandler == null) {
-            preventRepeatSubmitHandler = new PreventRepeatSubmitHandlerImpl(HttpHeaders.AUTHORIZATION);
+            preventRepeatSubmitHandler = new PreventRepeatSubmitHandlerImpl(objectMapper, HttpHeaders.AUTHORIZATION);
         }
         return new PreventRepeatSubmitAspect(stringRedisTemplate, preventRepeatSubmitHandler);
     }

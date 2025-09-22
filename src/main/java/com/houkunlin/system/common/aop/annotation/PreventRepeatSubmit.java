@@ -30,4 +30,25 @@ public @interface PreventRepeatSubmit {
      * 提示消息
      */
     String message() default DEFAULT_MESSAGE;
+
+    /**
+     * 使用方法参数对象的 hashCode 来做重复判断。如果为 true ，则 {@link #tryJson()} 参数设置失效
+     *
+     * @return Default：false
+     */
+    boolean useMethodArgs() default false;
+
+    /**
+     * 请求路径的查询参数字符串是否加入重复内容判断。如果启用，前端可以通过传递时间戳来绕过重复内容判断
+     *
+     * @return Default：false
+     */
+    boolean useQueryString() default false;
+
+    /**
+     * 当请求内容为 JSON 内容时，是否尝试反序列化后再序列化来进行重复内容判断，防止 JSON 内容加入无意义空格内容等情况，不过还是可以通过插入无意义的key来绕过重复内容判断
+     *
+     * @return Default：false
+     */
+    boolean tryJson() default false;
 }
